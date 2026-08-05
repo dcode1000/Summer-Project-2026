@@ -28,7 +28,7 @@ The Salt Inference Pipeline (SIP) has the following modes:
 
 ## Configuring the Pipeline
 
-Configuration of the SIP pipeline is done via a .txt file. An example of the format and required inputs is given below:
+Configuration of the SIP pipeline is done via a .txt file. All required formats are given in `SIP_config.txt`. 
 
 ## Running the Pipeline
 
