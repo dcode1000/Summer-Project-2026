@@ -7,7 +7,7 @@
 ### SIP Inference Pipeline
 
 ### Required Packages
-import h5py, numpy as np, pandas as pd, torch
+import h5py, hdf5plugin, numpy as np, pandas as pd, torch
 import matplotlib.pyplot as plt
 from salt.modelwrapper import ModelWrapper
 import scipy.stats as stats
