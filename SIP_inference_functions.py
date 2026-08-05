@@ -5,7 +5,7 @@
 ### Salt Inference Pipeline - Inference Functions
 #Repository for all data processing, model loading and inference running functions used in Salt Inference Pipeline
 
-import h5py, numpy as np, pandas as pd, torch
+import h5py, hdf5plugin, numpy as np, pandas as pd, torch
 import matplotlib.pyplot as plt
 from salt.modelwrapper import ModelWrapper
 import scipy.stats as stats
@@ -106,11 +106,11 @@ def h5_test_datafile_prepper(h5_file,list_dict,sample_size,STORED,lower_pt_cutof
                             # output from another model, for the same jets
         comp_probs = pd.DataFrame(comp_vals, columns=[f"{STORED}_pb", f"{STORED}_pc", f"{STORED}_pu", f"{STORED}_ptau"]) 
                         # converting probabilities returned from the STORED model to pd dataframe 
-        truth_flavours = np.vectorize({5: "b", 4: "c", 0: "light", 15: "tau"}.get)(jets["HadronConeExclTruthLabelID"][indices])
+        truth_flavours = np.vectorize({0: "b", 1: "c", 2: "light", 3: "tau"}.get)(jets["flavour_label"][indices])
                     # truth flavours of the jets - mapped to their names
 
-        pt_vals = jets["pt"][indices]/1000 # extracting corresponding eta and pt values for the jets sampled (in GeV)
-        eta_vals = jets["eta"][indices]
+        pt_vals = jets["pt_btagJes"][indices]/1000 # extracting corresponding eta and pt values for the jets sampled (in GeV)
+        eta_vals = jets["eta_btagJes"][indices]
 
         for key in data_dict.keys():
             data_dict[key] = f[key][indices] # putting the correctly sized datasets for jets within the desired pt range onto their corresponding key
