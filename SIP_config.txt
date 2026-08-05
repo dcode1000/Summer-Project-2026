@@ -1,34 +1,20 @@
-
-
-test_file: mc-flavtag-ttbar-small.h5
-comp_baseline_data: GN2_baseline_inference_output.csv
-model_name: GN2_test
+test_file: test_file.h5
+comp_baseline_data: comp_baseline_data.csv
+model_name: INFERENCE_MODEL_NAME
 norm_dict: norm_dict.yaml
-sample_size: 10000
+sample_size: N
 stored: GN2v01
 low_pt_cutoff: 20000
 high_pt_cutoff: 250000
 variables:
     jets:
-    - pt_btagJes
-    - eta_btagJes
+    - variable_1
+    - variable_2
+    - ..
     tracks:
-    - d0
-    - z0SinTheta
-    - dphi
-    - deta
-    - qOverP
-    - lifetimeSignedD0Significance
-    - lifetimeSignedZ0SinThetaSignificance
-    - phiUncertainty
-    - thetaUncertainty
-    - qOverPUncertainty
-    - numberOfPixelHits
-    - numberOfSCTHits
-    - numberOfInnermostPixelLayerHits
-    - numberOfNextToInnermostPixelLayerHits
-    - numberOfInnermostPixelLayerSharedHits
-    - numberOfInnermostPixelLayerSplitHits
-    - numberOfPixelSharedHits
-    - numberOfPixelSplitHits
-    - numberOfSCTSharedHits
+    - variable_1
+    - variable_2
+    - ..
+    other_h5_group_name
+    - variable_1
+    - ..
