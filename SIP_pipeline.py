@@ -70,7 +70,7 @@ if save_mode:
 if analysis_mode:
     counts_dict,confidences = SIP_af.jet_class_confidence_counter(probs,truth_flavours,0.3,0.01)
     if comp_mode ==True:
-        comp_probs,comp_pt,comp_eta,comp_truth_flavours = SIP_if.load_comp_data(COMP_BASELINE_DATA)
+        comp_probs,comp_pt,comp_eta,comp_truth_flavours = SIP_if.load_comp_data(COMP_BASELINE_DATA, N)
         comp_counts_dict,comp_confidences = SIP_af.jet_class_confidence_counter(comp_probs,comp_truth_flavours,0.3,0.01)
 
     flav_classes = ["b","c","light","tau"]
