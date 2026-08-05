@@ -126,6 +126,7 @@ def h5_test_datafile_prepper(h5_file,list_dict,sample_size,STORED,lower_pt_cutof
             pad_dict[key] = torch.from_numpy(pad) # creating a mask for these
 
             x = np.stack([dset[v] for v in list_dict[key]],axis=-1).astype(np.float32) # stacking all required columns from the input list_dict
+            x = np.nan_to_num(x,nan=0.0)
             x = torch.from_numpy(x) # creating a tensor of the same datatype as the numpy data array
 
             x[pad_dict[key]] = 0.0 # setting the invalid track params to 0
@@ -218,11 +219,12 @@ def save_output(probs,pt_vals,eta_vals,truth_flavours, MODEL_NAME, CKPT, FILE, C
         f.write(f'Inference Pipeline Config: {CONFIG}\n')
         f.write(f'Inference Run Sample Size: {N}')
 
-def load_comp_data(COMP_BASELINE_DATA):
+def load_comp_data(COMP_BASELINE_DATA,N):
     """
     Loads in comparison data csv file created using the save_output function.
     Inputs:
     - COMP_BASELINE_DATA: csv file with data for comparing to inference run model
+    - N: sample size for analysis
     Returns:
     - comp_probs: jet flavour probabilities comparison model inference data
     - comp_pt_vals: jet pt values from inference comparison data
@@ -230,6 +232,9 @@ def load_comp_data(COMP_BASELINE_DATA):
     - comp_truth_flavours: jet flavours from inference comparison data
     """
     comp_data = pd.read_csv(COMP_BASELINE_DATA)
+
+    comp_data = comp_data.iloc[:N]
+
     comp_probs = comp_data.iloc[:,:4].to_numpy()
     comp_pt_vals = comp_data["pt"].to_numpy()
     comp_eta_vals = comp_data["eta"].to_numpy()
