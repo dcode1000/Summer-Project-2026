@@ -20,7 +20,15 @@ This is a simple project to provide some tools for running inference on a checkp
 
 ## Modes
 
+The Salt Inference Pipeline (SIP) has the following modes:
+
+- Save mode: saves the model predicted probabilities to a csv file along with some additional variables such as the truth flavour of the jets, and their pt and eta also saves a .txt file containing information on the configuration of the pipeline. Default: True
+- Analysis mode: produces a series of graphs for determining the performance of the model under analysis. Default: False
+- Comp mode: takes in a csv file containing inference data from another model and then compares this to the model output being analysed in this training mode, allowing visual comparison on the produced graphs (need analysis mode on for comp mode to be useful). Default: False
+
 ## Configuring the Pipeline
+
+Configuration of the SIP pipeline is done via a .txt file. An example of the format and required inputs is given below:
 
 ## Running the Pipeline
 
