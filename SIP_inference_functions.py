@@ -206,7 +206,7 @@ def save_output(probs,pt_vals,eta_vals,truth_flavours, MODEL_NAME, CKPT, FILE, C
                         ,f'{MODEL_NAME}_pc':probs[:,1]
                         ,f'{MODEL_NAME}_pu':probs[:,2],
                         f'{MODEL_NAME}_ptau':probs[:,3]})
-    data["pt"] = pt_vals
+    data["pt (GeV)"] = pt_vals
     data["eta"] = eta_vals
     data["truth_flavour"] = truth_flavours
     data.to_csv(f'{MODEL_NAME}_inference_output.csv',index=False)
