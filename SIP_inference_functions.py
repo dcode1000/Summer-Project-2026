@@ -175,6 +175,7 @@ def inference_run(data_dict,pad_dict,model,return_scores=False):
 
 
     probs = torch.softmax(scores[0]["jets"]["jets_classification"], -1).numpy() #softmax converts to probability
+    scores = scores[0]["jets"]["jets_prob_regression"].numpy()
 
     if return_scores == True:
         return probs, scores
