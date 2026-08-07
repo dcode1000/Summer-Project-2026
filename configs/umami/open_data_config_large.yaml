@@ -1,0 +1,99 @@
+variables:
+  jets:
+    inputs:
+      - pt_btagJes
+      - eta_btagJes
+    labels:
+      - HadronConeExclTruthLabelID
+      - HadronConeExclExtendedTruthLabelID
+      - HadronGhostTruthLabelID
+      - HadronGhostExtendedTruthLabelID
+      - pt
+      - eta
+      - mass
+      - eventNumber
+  tracks:
+    inputs:
+      - d0
+      - z0SinTheta
+      - dphi
+      - deta
+      - qOverP
+      - lifetimeSignedD0Significance
+      - lifetimeSignedZ0SinThetaSignificance
+      - phiUncertainty
+      - thetaUncertainty
+      - qOverPUncertainty
+      - numberOfPixelHits
+      - numberOfSCTHits
+      - numberOfInnermostPixelLayerHits
+      - numberOfNextToInnermostPixelLayerHits
+      - numberOfInnermostPixelLayerSharedHits
+      - numberOfInnermostPixelLayerSplitHits
+      - numberOfPixelSharedHits
+      - numberOfPixelSplitHits
+      - numberOfSCTSharedHits
+    labels:
+      - ftagTruthOriginLabel
+      - ftagTruthVertexIndex
+
+global_cuts:
+  train:
+    - [eventNumber, "%10<=", 7]
+  val:
+    - [eventNumber, "%10==", 8]
+  test:
+    - [eventNumber, "%10==", 9]
+
+ttbar: &ttbar
+  name: ttbar
+  equal_jets: False
+  pattern:
+    - "/nfs/users/drobbie/open_data/mc-flavtag-ttbar-large.h5"
+
+lowpt: &lowpt
+  name: lowpt
+  cuts:
+    - [pt_btagJes, ">", 20_000]
+    - [pt_btagJes, "<", 250_000]
+
+components:
+  - region:
+      <<: *lowpt
+    sample:
+      <<: *ttbar
+    flavours: [bjets, cjets]
+    num_jets: 13_000_000
+
+  - region:
+      <<: *lowpt
+    sample:
+      <<: *ttbar
+    flavours: [ujets]
+    num_jets: 26_000_000
+
+  - region:
+      <<: *lowpt
+    sample:
+      <<: *ttbar
+    flavours: [taujets]
+    num_jets: 1_500_000
+
+resampling:
+  target: cjets
+  method: countup
+  sampling_fraction: auto
+  variables:
+    pt_btagJes:
+      bins: [[20_000, 250_000, 50]]
+    eta_btagJes:
+      bins: [[-2.5, 2.5, 40]]
+
+# note: sensible defaults are defined in the PreprocessingConfig constructor
+global:
+  jets_name: jets
+  batch_size: 1_000_000
+  num_jets_estimate: 25_000_000
+  base_dir: /nfs/users/drobbie
+  ntuple_dir: /nfs/users/drobbie/open_data
+  out_dir: /nfs/users/drobbie/umami_output

@@ -1,0 +1,65 @@
+jets:
+  pt_btagJes:
+    mean: 67559.8828125
+    std: 42031.58984375
+  eta_btagJes:
+    mean: 0.011374733410775661
+    std: 1.2085522413253784
+tracks:
+  d0:
+    mean: 0.004808134399354458
+    std: 0.5452272891998291
+  z0SinTheta:
+    mean: -0.006322997156530619
+    std: 1.2082898616790771
+  dphi:
+    mean: -0.0004082607920281589
+    std: 0.12830516695976257
+  deta:
+    mean: 0.0008876891806721687
+    std: 0.12490151077508926
+  qOverP:
+    mean: 1.0836459551910593e-07
+    std: 0.000511349062435329
+  lifetimeSignedD0Significance:
+    mean: 1.7485003471374512
+    std: 7.763622760772705
+  lifetimeSignedZ0SinThetaSignificance:
+    mean: 0.8404354453086853
+    std: 9.4688720703125
+  phiUncertainty:
+    mean: 0.0018875388195738196
+    std: 0.001963666407391429
+  thetaUncertainty:
+    mean: 0.001315839821472764
+    std: 0.0010549374856054783
+  qOverPUncertainty:
+    mean: 7.4180961746606044e-06
+    std: 8.996275028039236e-06
+  numberOfPixelHits:
+    mean: 3.9341232809430253
+    std: 1.0177185870005356
+  numberOfSCTHits:
+    mean: 8.06335952848723
+    std: 1.455052949843849
+  numberOfInnermostPixelLayerHits:
+    mean: 0.9634393418467584
+    std: 0.3932391654726794
+  numberOfNextToInnermostPixelLayerHits:
+    mean: 0.9708681237721022
+    std: 0.4405104065363425
+  numberOfInnermostPixelLayerSharedHits:
+    mean: 0.02237843811394892
+    std: 0.14791093137942535
+  numberOfInnermostPixelLayerSplitHits:
+    mean: 0.02111984282907662
+    std: 0.15147741108797827
+  numberOfPixelSharedHits:
+    mean: 0.039077848722986246
+    std: 0.1937802117404397
+  numberOfPixelSplitHits:
+    mean: 0.05101915520628684
+    std: 0.30574507632330966
+  numberOfSCTSharedHits:
+    mean: 0.17476055992141454
+    std: 0.46803811799714695

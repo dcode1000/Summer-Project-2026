@@ -1,0 +1,11 @@
+Slurm Practise submission script:
+
+python submit/submit_slurm.py --config full_ds_model_config.yaml --tag full_ds_model --partition 1/2 --account MY-ACCOUNT --nodes 1 --gpus_per_node 3
+
+Almost working submission script:
+
+ython ../training_env/lib/python3.11/site-packages/salt/submit/submit_slurm.py --config full_ds_model_config.yaml --tag full_ds_model --partition 0 --account 2879346r --nodes 1 --gpus_per_node 3
+
+Working Submission script:
+
+python ../training_env/lib/python3.11/site-packages/salt/submit/submit_slurm.py --config full_ds_model_config.yaml --tag full_ds_model --partition gpu-h100 --account default --nodes 1 --gpus_per_node 3

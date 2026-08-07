@@ -1,0 +1,14 @@
+Ftag Dumper: from the appropriate folder in TDD directory for storing dumped files:
+- source ../dumper_loop.sh ../../../../Ftag_1_tt/mc20_13TeV
+
+With config TruthHadrons.json
+
+UPP: in dumped_truth/UPP/full_truth
+- preprocess --config UPP_truth_hadrons_config.yaml --prep --resample --merge --norm --plot --split=all
+
+In upp_test_env
+
+salt: in dumped_truth/salt
+regression model: 
+- config : salt_truth_regression_config.yaml
+- trained with command: salt fit --config salt_truth_regression_config.yaml
