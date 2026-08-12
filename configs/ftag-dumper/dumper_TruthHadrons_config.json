@@ -1,0 +1,249 @@
+{
+    "jet_collection": "AntiKt4EMPFlowJets",
+    "calibration": {
+        "files": [
+            "fragments/pflow-calibration.json"
+        ]
+    },
+    "selection": {
+        "files": [
+            "fragments/pflow-selection.json"
+        ]
+    },
+    "vertex_collection": "PrimaryVertices",
+    "truth_vertex_collection": "TruthPrimaryVertices",
+    "variables": {
+        "jet": {
+            "ints": [
+                "HadronGhostTruthLabelID",
+                "HadronGhostExtendedTruthLabelID",
+                "PartonTruthLabelID",
+                "HadronConeExclExtendedTruthLabelID",
+                "HadronConeExclTruthLabelID"
+            ],
+            "uints": [
+                "jetFoldHash",
+                "jetFoldHash_noHits"
+            ],
+            "floats": [
+                "pt",
+                "mass",
+                "pt_btagJes",
+                "eta_btagJes",
+                "ptFromTruthJet",
+                "etaFromNearestJet",
+                "phiFromNearestJet",
+                "deltaEtaToTruthJet",
+                "deltaPhiToTruthJet",
+                "PartonTruthLabelPt",
+                "PartonTruthLabelDR",
+                "GN2v01_pb",
+                "GN2v01_pc",
+                "GN2v01_pu",
+                "GN2v01_ptau"
+            ],
+            "chars": [
+                "matchedToTruthJet",
+                "isJvtPU",
+                "isJvtHS"
+            ]
+        },
+        "event": {
+            "customs": [
+                "mcCampaignYear",
+                "eventNumber"
+            ]
+        },
+        "default_mapping": {
+            "files": [
+                "fragments/default-mapping.json"
+            ]
+        }
+    },
+    "decorate": {
+        "btag_jes": true,
+        "lepton_decay_label": true
+    },
+"tracks": {
+        "tracks": {
+            "n_to_save": 40,
+            "selection": {
+                "files": [
+                    "fragments/r22default-track-cuts.json"
+                ]
+            },
+            "sort_order": "d0_significance",
+            "input_name": "GhostTrack",
+            "variables": {
+                "uchars": [
+                    "numberOfInnermostPixelLayerHits",
+                    "numberOfNextToInnermostPixelLayerHits",
+                    "numberOfInnermostPixelLayerSharedHits",
+                    "numberOfInnermostPixelLayerSplitHits",
+                    "numberOfPixelHits",
+                    "numberOfPixelSharedHits",
+                    "numberOfPixelSplitHits",
+                    "numberOfSCTHits",
+                    "numberOfSCTSharedHits"
+                ],
+                "floats": [
+                    "qOverP"
+                ],
+                "halves": [
+                    "theta"
+                ],
+                "customs": [
+                    "pt",
+                    "ptfrac",
+                    "deta",
+                    "qOverPUncertainty"
+                ],
+                "half_precision_customs": [
+                    "d0",
+                    "z0SinTheta",
+                    "d0Uncertainty",
+                    "z0SinThetaUncertainty",
+                    "phiUncertainty",
+                    "thetaUncertainty",
+                    "dphi",
+                    "z0RelativeToBeamspot",
+                    "z0RelativeToBeamspotUncertainty",
+                    "d0RelativeToBeamspot",
+                    "d0RelativeToBeamspotUncertainty",
+                    "lifetimeSignedD0",
+                    "lifetimeSignedZ0SinTheta",
+                    "lifetimeSignedD0Significance",
+                    "lifetimeSignedZ0SinThetaSignificance"
+                ],
+                "ints": [
+                    "ftagTruthParentBarcode",
+                    "ftagTruthOriginLabel",
+                    "ftagTruthVertexIndex"
+                ],
+                "chars": [
+                    "GN2v01_trackOrigin",
+                    "GN2v01_vertexIndex"
+                ]
+                
+            },
+            "ip_prefix": "btagIp_"
+        }
+    },
+    "associations": {
+        "flows": {
+            "type": "flow",
+            "n_to_save": 50,
+            "accessor": "constituentLinks",
+            "variables": {
+                "customs": [
+                    "pt",
+                    "energy",
+                    "deta",
+                    "dphi",
+                    "isCharged"
+                ]
+            }
+        }
+    },
+    "electrons": {
+
+    },
+    "truths": {
+        "truth_hadrons": {
+            "association": {
+
+                "pt_minimum": 500,
+                "abs_eta_maximum": 2.5,
+                "dr_maximum": 0.4,
+
+                "particles": "truth_stableNonGeant"
+
+            },
+            "output": {
+                "n_to_save": 50,
+                "sort_order": "pt"
+            },
+            "vars": {
+                "ints": [
+                    "pdgId",
+                    "barcode",
+                    "ftagTruthParentBarcode"
+                ],
+                "floats": [
+                    "pt",
+                    "mass",
+                    "deta",
+                    "dphi",
+                    "decayVertexDPhi",
+                    "decayVertexZ",
+                    "Lxy"
+                ]
+            }
+        }
+    },
+    "ca_blocks": [
+
+        {
+            "block": "JetMatcher",
+            "source_jets": [
+                "AntiKt4TruthJets"
+            ],
+            "source_name": "TruthJet",
+            "floats_to_copy": [
+                "pt"
+            ],
+            "pt_priority_with_delta_r": 0.3
+        },
+        {
+            "block": "JetMatcher",
+            "source_jets": [
+                "AntiKt4TruthDressedWZJets"
+            ],
+            "source_name": "TruthDressedWZJet",
+            "floats_to_copy": [
+                "pt"
+            ],
+            "pt_priority_with_delta_r": 0.3
+        },
+        {
+            "block": "JetMatcher",
+            "source_jets": [
+                "AntiKt4EMPFlowJets"
+            ],
+            "source_name": "NearestJet",
+            "floats_to_copy": [
+                "pt",
+                "eta",
+                "phi"
+            ],
+            "ints_to_copy": [
+                "HadronGhostTruthLabelID"
+            ]
+        },
+                {
+            "block": "GNNAuxTaskMapper",
+            "jet_container": "AntiKt4EMPFlowJets",
+            "track_container": "InDetTrackParticles",
+            "track_links": "GN2v01_TrackLinks",
+            "track_aux_tasks": {
+                "GN2v01_VertexIndex": "GN2v01_vertexIndex",
+                "GN2v01_TrackOrigin": "GN2v01_trackOrigin"
+            }
+        },
+
+        {
+            "block": "MetaDataDecorator",
+            "variables_to_decorate": [
+                "mcCampaignYear"
+            ]
+        },
+        {
+            "block": "PoorMansIpAugmenter",
+            "prefix": "poormanIp_",
+            "primary_vertex_container": "PrimaryVertices"
+        },
+        {
+            "block": "HFGluonSplitLabeller"
+        }
+    ]
+}
