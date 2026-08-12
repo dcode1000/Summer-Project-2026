@@ -46,3 +46,7 @@ Once the data has been preprocessed, training can be performed. This is done usi
 Salt training can be performed using the command:\
 `salt fit --config $CONFIG`\
 To target specific GPUs can use the `--trainer.devices` flag and enclose specific device numbers in square brackets. A slurm submission script is also included in the docs, although will not work with uv virtual environments. Manual alteration of the produced sbatch script can be used to make it work with uv venvs.
+
+## Analysis
+
+Analysing trained models can be done using the salt test command (see docs). For more in depth analysis the 'Salt Inference Pipeline' (SIP) which is in a linked repository, can be used. (SOME FEATURES STILL WORK IN PROGRESS). This contains some python scripts for producing graphs and comparing models.
