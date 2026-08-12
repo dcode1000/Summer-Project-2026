@@ -6,3 +6,6 @@ Configs used are compatible with:
 - ftag-dumper version: 25.9.7???
 - umami-preprocessing version: 0.3.1
 - salt-ml version: 0.13.0
+
+Notes:
+Mean and std values in regression model config are taken from the values determined by umami-preprocessing of the available dataset dumped data.
