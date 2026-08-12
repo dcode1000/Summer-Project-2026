@@ -48,8 +48,8 @@ model:
                 input_name: jets
                 targets: [GN2v01_pb, GN2v01_pc, GN2v01_pu, GN2v01_ptau]
                 norm_params:
-                  mean: [0, 0, 0, 0]
-                  std: [1,1,1, 1]
+                  mean: [0.22814, 0.24812, 0.38965, 0.13409]
+                  std: [0.36566,0.26493,0.36135, 0.27706]
                 loss: 
                   class_path: torch.nn.MSELoss
                 dense_config: &task_dense_config
