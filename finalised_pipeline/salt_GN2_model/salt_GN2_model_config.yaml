@@ -19,16 +19,20 @@ model:
             activation: &activation ReLU
 
       encoder:
-        class_path: salt.models.TransformerEncoder
+        class_path: salt.models.Transformer
         init_args:
           embed_dim: *embed_dim
           num_layers: 4
           out_dim: &out_dim 128
-          mha_config:
-            num_heads: 8
-            attention: { class_path: salt.models.ScaledDotProductAttention }
-          dense_config:
+          # flash attention
+          attn_type: flash-varlen
+          norm: LayerNorm
+          do_final_norm: True
+          dense_kwargs:
             activation: *activation
+            gated: False
+          attn_kwargs:
+            num_heads: 8
 
       pool_net:
         class_path: salt.models.GlobalAttentionPooling
@@ -105,18 +109,18 @@ data:
       - numberOfPixelSplitHits
       - numberOfSCTSharedHits
 
-train_file: /nfs/users/drobbie/open_data_pp_output/pp_output_train.h5
-val_file: /nfs/users/drobbie/open_data_pp_output/pp_output_val.h5
-norm_dict: /nfs/users/drobbie/open_data_pp_output/norm_dict.yaml
-class_dict: /nfs/users/drobbie/open_data_pp_output/class_dict.yaml
+  train_file: /nfs/users/drobbie/open_data_pp_output/pp_output_train.h5
+  val_file: /nfs/users/drobbie/open_data_pp_output/pp_output_val.h5
+  norm_dict: /nfs/users/drobbie/open_data_pp_output/norm_dict.yaml
+  class_dict: /nfs/users/drobbie/open_data_pp_output/class_dict.yaml
 
-batch_size: 3000
-num_workers: 40
+  batch_size: 3000
+  num_workers: 40
 
 trainer:
   max_epochs: 40
   accelerator: gpu
-  devices: 3
+  devices: 2
   precision: 16-mixed
   callbacks: 
     - class_path: salt.callbacks.Checkpoint
