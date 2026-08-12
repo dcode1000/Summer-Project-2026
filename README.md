@@ -34,4 +34,15 @@ Using appropriate files of the DAOD format and the config in this repository, hd
 `dump-single-btag -c $CONFIG $FILENAME -o $OUTPUT_FILENAME`
 
 ### Stage 2: Umami-preprocessing
-After hdf5 files containing the appropriate data have been created, it must be prepared for use in model training. This can be done using umami-preprocessing. 
+After hdf5 files containing the appropriate data have been created, it must be prepared for use in model training. This can be done using umami-preprocessing. Umami can preprocess data using the command: \
+`preprocess --config $CONFIG --prep --resample --merge --norm --plot --split=all`\
+This performs all steps of preprocessing and creates training, validation and testing datasets as well as norm_dict.yaml and class_dict.yaml files necessary for salt training. The norm_dict and class_dict file have been included in the UPP folder of the finalised_pipeline folder. 
+
+### Stage 3: Salt Training
+Once the data has been preprocessed, training can be performed. This is done using salt-ml. Salt training is again configured using a config, three configs for various different models have been included in the salt folder of the finalised_configs folder. In the config the training variables must be specified. To use multiple different kinds of variable in the same training (say "tracks" and "truth_hadrons") separate init_nets must be setup in the appropriate place, which can be copied from the setup in the configs in this repository. Training without using GPUs is not recommended. Various GPU settings can be configured from the config.yaml file.
+
+#### Running Salt Training
+
+Salt training can be performed using the command:\
+`salt fit --config $CONFIG`\
+To target specific GPUs can use the `--trainer.devices` flag and enclose specific device numbers in square brackets. A slurm submission script is also included in the docs, although will not work with uv virtual environments. Manual alteration of the produced sbatch script can be used to make it work with uv venvs.
