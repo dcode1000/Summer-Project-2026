@@ -1,0 +1,114 @@
+variables:
+  jets:
+    inputs:
+      - pt_btagJes
+      - eta_btagJes
+      - GN2v01_pb
+      - GN2v01_pc
+      - GN2v01_pu
+      - GN2v01_ptau
+    labels:
+      - HadronConeExclTruthLabelID
+      - HadronConeExclExtendedTruthLabelID
+      - HadronGhostTruthLabelID
+      - HadronGhostExtendedTruthLabelID
+      - pt
+      - mass
+      - eventNumber
+
+  tracks:
+    inputs:
+      - d0
+      - z0SinTheta
+      - dphi
+      - deta
+      - qOverP
+      - lifetimeSignedD0Significance
+      - lifetimeSignedZ0SinThetaSignificance
+      - phiUncertainty
+      - thetaUncertainty
+      - qOverPUncertainty
+      - numberOfPixelHits
+      - numberOfSCTHits
+      - numberOfInnermostPixelLayerHits
+      - numberOfNextToInnermostPixelLayerHits
+      - numberOfInnermostPixelLayerSharedHits
+      - numberOfInnermostPixelLayerSplitHits
+      - numberOfPixelSharedHits
+      - numberOfPixelSplitHits
+      - numberOfSCTSharedHits
+    labels:
+      - ftagTruthOriginLabel
+      - ftagTruthVertexIndex
+  truth_hadrons:
+    inputs:
+      - pdgId
+      - pt
+      - mass
+      - deta
+      - dphi
+      - decayVertexDPhi
+      - decayVertexZ
+      - Lxy
+    labels:
+      - ftagTruthParentBarcode
+global_cuts:
+  train:
+    - [eventNumber, "%10<=", 7]
+  val:
+    - [eventNumber, "%10==", 8]
+  test:
+    - [eventNumber, "%10==", 9]
+
+ttbar: &ttbar
+  name: ttbar
+  equal_jets: False
+  pattern:
+    - "*._002*.h5"
+
+lowpt: &lowpt
+  name: lowpt
+  cuts:
+    - [pt_btagJes, ">", 20_000]
+    - [pt_btagJes, "<", 250_000]
+
+components:
+  - region:
+      <<: *lowpt
+    sample:
+      <<: *ttbar
+    flavours: [bjets, cjets]
+    num_jets: 275_000
+
+  - region:
+      <<: *lowpt
+    sample:
+      <<: *ttbar
+    flavours: [ujets]
+    num_jets: 420_000
+
+  - region:
+      <<: *lowpt
+    sample:
+      <<: *ttbar
+    flavours: [taujets]
+    num_jets: 30_000
+
+
+resampling:
+  target: cjets
+  method: countup
+  sampling_fraction: auto
+  variables:
+    pt_btagJes:
+      bins: [[20_000, 250_000, 40]]
+    eta_btagJes:
+      bins: [[-2.5, 2.5, 30]]
+
+# note: sensible defaults are defined in the PreprocessingConfig constructor
+global:
+  jets_name: jets
+  batch_size: 100_000
+  num_jets_estimate: 10_000_000
+  base_dir: /nfs/users/drobbie/dumped_truth/UPP/full_truth
+  ntuple_dir: /nfs/users/drobbie/dumped_truth/full_dumped_data
