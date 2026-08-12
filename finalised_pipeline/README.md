@@ -1,4 +1,4 @@
-## finalised_configs README
+## finalised_pipeline README
 
 This folder contains all finalised configs and relevant files from full truth model training pipeline. Relevant files from each stage of the pipeline are separated into folders. Each final trained model has been separated also. Checkpoints and metadata as well as the configs for each are stored in each folder. 
 
