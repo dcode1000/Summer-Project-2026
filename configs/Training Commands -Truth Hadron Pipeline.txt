@@ -7,10 +7,10 @@ UPP: in dumped_truth/UPP/full_truth
 In upp_test_env
 command: preprocess --config UPP_truth_hadrons_config.yaml --prep --resample --merge --norm --plot --split=all
 
-In upp_test_env
+In upp_test_env (python 3.11.15, umami-preprocessing: 0.3.1)
 
 salt: in dumped_truth/salt
-In salt_test_env
+In salt_test_env (python 3.11.15, salt-ml: 0.13.0)
 regression model: 
 - config : salt_truth_regression_config.yaml
 - trained with command: salt fit --config salt_truth_regression_config.yaml
@@ -18,4 +18,9 @@ regression model:
 * removed auxiliary track based tasks - could add them back with truth hadron information if desired *
 
 classification model with truth data:
-- 
+In salt_test_env
+salt fit --config salt_GN2_model_config.yaml
+
+GN2 style classification model:
+In salt_test_env:
+salt fit --config salt_GN2_model_config.yaml
