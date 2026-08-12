@@ -12,3 +12,8 @@ salt: in dumped_truth/salt
 regression model: 
 - config : salt_truth_regression_config.yaml
 - trained with command: salt fit --config salt_truth_regression_config.yaml
+
+* removed auxiliary track based tasks - could add them back with truth hadron information if desired *
+
+classification model with truth data:
+- 
