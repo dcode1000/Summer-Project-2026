@@ -1,3 +1,0 @@
-[submodule "SIP"]
-	path = SIP
-	url = https://github.com/dcode1000/SaltInferencePipeline.git
