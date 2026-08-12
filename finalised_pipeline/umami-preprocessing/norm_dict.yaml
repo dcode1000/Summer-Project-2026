@@ -1,0 +1,102 @@
+jets:
+  pt_btagJes:
+    mean: 67339.78828124999
+    std: 40748.45043490433
+  eta_btagJes:
+    mean: 0.0030636704759672284
+    std: 1.1893367268113226
+  GN2v01_pb:
+    mean: 0.2281414359807968
+    std: 0.3656627591777419
+  GN2v01_pc:
+    mean: 0.2481197953224182
+    std: 0.26492875503732427
+  GN2v01_pu:
+    mean: 0.38964760601520537
+    std: 0.3613495224571118
+  GN2v01_ptau:
+    mean: 0.13409115374088287
+    std: 0.27705698163092696
+tracks:
+  d0:
+    mean: -0.0009591552458005026
+    std: 0.5453393550170835
+  z0SinTheta:
+    mean: -0.00010739329445641488
+    std: 1.1223848793358073
+  dphi:
+    mean: 9.260383812943473e-05
+    std: 0.1376102017698908
+  deta:
+    mean: 6.340505424304866e-05
+    std: 0.13657400114801424
+  qOverP:
+    mean: 1.8113611986336764e-06
+    std: 0.0005280945439047692
+  lifetimeSignedD0Significance:
+    mean: 1.9047390699386597
+    std: 8.211879099927925
+  lifetimeSignedZ0SinThetaSignificance:
+    mean: 0.8795048475265503
+    std: 8.859029275752679
+  phiUncertainty:
+    mean: 0.001851096423342824
+    std: 0.0018476396826686058
+  thetaUncertainty:
+    mean: 0.0013624251005239785
+    std: 0.0010811260052815783
+  qOverPUncertainty:
+    mean: 7.161039184211404e-06
+    std: 7.972563268132765e-06
+  numberOfPixelHits:
+    mean: 3.908738018216974
+    std: 0.997888635272974
+  numberOfSCTHits:
+    mean: 8.10941013944601
+    std: 1.4338575977676244
+  numberOfInnermostPixelLayerHits:
+    mean: 0.9656641027792147
+    std: 0.3878153524057569
+  numberOfNextToInnermostPixelLayerHits:
+    mean: 0.95095638786119
+    std: 0.4461232760027535
+  numberOfInnermostPixelLayerSharedHits:
+    mean: 0.019392024204762517
+    std: 0.13789841769217084
+  numberOfInnermostPixelLayerSplitHits:
+    mean: 0.01667099743370937
+    std: 0.13373237176825525
+  numberOfPixelSharedHits:
+    mean: 0.03242421290401285
+    std: 0.17712392080565542
+  numberOfPixelSplitHits:
+    mean: 0.04741816525987694
+    std: 0.30460753628664383
+  numberOfSCTSharedHits:
+    mean: 0.1348944936660751
+    std: 0.41400880567797965
+truth_hadrons:
+  pdgId:
+    mean: 23.419567507306787
+    std: 642.2568626225948
+  pt:
+    mean: 5315.5056640625
+    std: 9032.509106498155
+  mass:
+    mean: 188.4015319824219
+    std: 265.4015057609739
+  deta:
+    mean: 4.714606911875308e-05
+    std: 0.1288238909967119
+  dphi:
+    mean: 9.592303758836352e-05
+    std: 0.12993662291658167
+  decayVertexDPhi:
+    mean: 0.00046523177152266724
+    std: 0.15972210024792044
+  decayVertexZ:
+    mean: 2.5838794246315957
+    std: 1121.5631823619372
+  Lxy:
+    mean: 493.32765808105466
+    std: 387.3753729717731
