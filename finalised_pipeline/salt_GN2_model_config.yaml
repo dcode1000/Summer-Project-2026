@@ -105,18 +105,18 @@ data:
       - numberOfPixelSplitHits
       - numberOfSCTSharedHits
 
-train_file: /nfs/users/drobbie/dumped_truth/UPP/full_truth/output/pp_output_train.h5
-val_file: /nfs/users/drobbie/dumped_truth/UPP/full_truth/output/pp_output_val.h5
-norm_dict: /nfs/users/drobbie/dumped_truth/UPP/full_truth/output/norm_dict.yaml
-class_dict: /nfs/users/drobbie/dumped_truth/UPP/full_truth/output/class_dict.yaml
+train_file: /nfs/users/drobbie/open_data_pp_output/pp_output_train.h5
+val_file: /nfs/users/drobbie/open_data_pp_output/pp_output_val.h5
+norm_dict: /nfs/users/drobbie/open_data_pp_output/norm_dict.yaml
+class_dict: /nfs/users/drobbie/open_data_pp_output/class_dict.yaml
 
 batch_size: 3000
 num_workers: 40
 
 trainer:
-  max_epochs: 2
+  max_epochs: 40
   accelerator: gpu
-  devices: 1
+  devices: 3
   precision: 16-mixed
   callbacks: 
     - class_path: salt.callbacks.Checkpoint
