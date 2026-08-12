@@ -1,6 +1,6 @@
 ﻿# Summer-Project-2026
 
-This repository contains all configs and selected other files used in this project. This project had the primary goal of training a truth surrogate version of the GN2 flavour tagging model used by ATLAS. A secondary objective was to observe scaling law behaviour in trained models. All documents related to this project are in the scaling_laws_test directory, with the rest of the repository relating to the primary objective. All information regarding the scaling laws objective are in a separate README in that folder.
+This repository contains all configs and selected other files used in this project. This project had the primary goal of training a truth surrogate version of the GN2 flavour tagging model used by ATLAS. A secondary objective was to observe scaling law behaviour in trained models. All documents related to this objective are in the scaling_laws_test directory, with the rest of the repository relating to the primary objective. All information regarding the scaling laws objective are in a separate README in that folder.
 
 ## Software
 
