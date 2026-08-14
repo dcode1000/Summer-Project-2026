@@ -49,9 +49,3 @@ This software was written in python 3.11.15. The following packages are required
 
 Salt is based on pytorch lightning. Ensure compatibility between the version of lightning the checkpoint was created in and the version of lightning you are running to load the checkpoint. This also goes for the version of salt being used. 
 
-## Installation
-
-Clone the repository:
-
-```bash
-git clone https://github.com/dcode1000/SaltInferencePipeline.git
