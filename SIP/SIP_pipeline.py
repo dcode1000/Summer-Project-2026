@@ -34,68 +34,57 @@ parser.add_argument("--save_mode", action="store_false")
 args = parser.parse_args()
 
 ### pipeline input
-CKPT   = args.checkpoint # model checkpoint
 CONFIG = args.config # Text file for configuring h5 test dataset
 
 ### pipeline configs
 analysis_mode = args.analysis_mode # plots graphs and histograms, make false and turn on save_mode to just save the model
-comp_mode = args.comp_mode # enables comparison with data input from a comparison pandas dataset
 save_mode = args.save_mode # saves output jet flavour probabilities, pt, eta and truth flavours for comparison to another model
 
-
-# In[5]:
-
-
 ### Running Inference
-TEST_FILE,COMP_BASELINE_DATA,MODEL_NAME,NORM,N,STORED,low_pt_cutoff,high_pt_cutoff,config_dict = SIP_if.analysis_config_parser(CONFIG)
+test_file, sample_size, stored, low_pt_cutoff, high_pt_cutoff, model_dict = SIP_if.config_parser(CONFIG)
 print(f'Config file: {CONFIG} Parsed')
 
-data_dict,pad_dict,comp_probs,truth_flavours,pt_vals,eta_vals = SIP_if.h5_test_datafile_prepper(TEST_FILE,config_dict,N,STORED,low_pt_cutoff,high_pt_cutoff)
-print(f'Test File: {TEST_FILE} Prepared')
+for model_name,model in model_dict.items():
+    data_dict,pad_dict,comp_probs,truth_flavours,pt_vals,eta_vals = SIP_if.h5_test_datafile_prepper(test_file,model["inference_variables"]
+                                                                                             ,sample_size,stored,low_pt_cutoff,high_pt_cutoff)
+    model["data_dict"] = data_dict
+    model["pad_dict"] = pad_dict
+    model["comp_probs"] = comp_probs
+    model["truth_flavour"] = truth_flavours
+    model["pt_vals"] = pt_vals
+    model["eta_vals"] = eta_vals
+    
+    print(f'Test File: {test_file} Prepared')
 
-model = SIP_if.model_loader(CKPT,NORM)
-print(f'Checkpoint Model: {CKPT} Loaded')
-
-probs = SIP_if.inference_run(data_dict,pad_dict,model)
-print(f'Inference Run')
-
-if save_mode:
-    SIP_if.save_output(probs,pt_vals,eta_vals,truth_flavours,MODEL_NAME,CKPT,TEST_FILE,CONFIG,N)
-    print(f'Data saved as: {MODEL_NAME}_inference_output.csv\nMetadata saved as: {MODEL_NAME}_inference_run_data.txt')
-
-
-# In[6]:
+    ckpt, norm = model["model_checkpoint"], model["norm_dict"]
+    loaded_model = SIP_if.model_loader(ckpt, norm)
+    print(f'Checkpoint Model: {model["model_checkpoint"]} Loaded')
+    
+    probs,scores = SIP_if.inference_run(data_dict,pad_dict,loaded_model,return_scores=True)
+    print(f'Inference Run')
+    
+    model["probs"] = probs
+    model["scores"] = scores
+    del model["pad_dict"]["REGISTERS"]
+    
+    if save_mode:
+        SIP_if.save_output(probs,pt_vals,eta_vals,truth_flavours,model_name,ckpt,test_file,CONFIG,sample_size)
+        print(f'Data saved as: {model_name}_inference_output.csv\nMetadata saved as: {model_name}_inference_run_data.txt')
 
 
 if analysis_mode:
-    counts_dict,confidences = SIP_af.jet_class_confidence_counter(probs,truth_flavours,0.3,0.01)
-    if comp_mode ==True:
-        comp_probs,comp_pt,comp_eta,comp_truth_flavours = SIP_if.load_comp_data(COMP_BASELINE_DATA, N)
-        comp_counts_dict,comp_confidences = SIP_af.jet_class_confidence_counter(comp_probs,comp_truth_flavours,0.3,0.01)
-
-    flav_classes = ["b","c","light","tau"]
-
+    for model_name,model in model_dict.items():
+        model["counts_dict"],model["confidences"] = jet_class_confidence_counter(model["probs"],model["truth_flavour"],0.3,0.01)
     fig = plt.figure(figsize=(10,25), constrained_layout=True)
     gs = fig.add_gridspec(5,1)
-    if comp_mode == True:
-        SIP_af.profile_hist_plotter(fig,gs[0,0],pt_vals,probs,10,"$p_T$","Probability",MODEL_NAME,"GeV",
-                             comp_mode=True,comp_x_data=comp_pt,comp_y_data=comp_probs)
-        SIP_af.profile_hist_plotter(fig,gs[1,0],eta_vals,probs,10,rf"$\eta$","Probability",MODEL_NAME,None,
-                             comp_mode=True,comp_x_data=comp_eta,comp_y_data=comp_probs)
-        SIP_af.profile_hist_plotter_truth(fig,gs[2,0],pt_vals,probs,truth_flavours,10,"$p_T$","Probability",MODEL_NAME,"GeV",
-                                   comp_mode=True,comp_x_data=comp_pt,comp_y_data=comp_probs,comp_truth_flavour=comp_truth_flavours)
-        SIP_af.profile_hist_plotter_truth(fig,gs[3,0],eta_vals,probs,truth_flavours,10,rf"$\eta$","Probability",MODEL_NAME,None,
-                                  comp_mode=True,comp_x_data=comp_eta,comp_y_data=comp_probs,comp_truth_flavour=comp_truth_flavours)
-        SIP_af.predict_count_plotter(fig,gs[4,0],counts_dict,comp_confidences,MODEL_NAME,
-                              comp_mode=True,comp_counts_dict=comp_counts_dict)
-    else:
-        SIP_af.profile_hist_plotter(fig,gs[0,0],pt_vals,probs,10,"$p_T$","Probability",MODEL_NAME,"GeV",comp_mode=False)
-        SIP_af.profile_hist_plotter(fig,gs[1,0],eta_vals,probs,10,rf"$\eta$","Probability",MODEL_NAME,None,comp_mode=False)
-        SIP_af.profile_hist_plotter_truth(fig,gs[2,0],pt_vals,probs,truth_flavours,10,"$p_T$","Probability",MODEL_NAME,"GeV",comp_mode=False)
-        SIP_af.profile_hist_plotter_truth(fig,gs[3,0],eta_vals,probs,truth_flavours,10,rf"$\eta$","Probability",MODEL_NAME,None,comp_mode=False)
-        SIP_af.predict_count_plotter(fig,gs[4,0],counts_dict,confidences,MODEL_NAME,comp_mode=False)
-    fig.suptitle(f'{MODEL_NAME} Inference Run Analysis',fontsize=16)
-    fig.savefig(f'{MODEL_NAME}_inference_report.png')
+    
+    profile_hist_plotter(fig,gs[0,0],model_dict,"pt","probability",10)
+    profile_hist_plotter(fig,gs[1,0],model_dict,"eta","probability",10)
+    profile_hist_plotter_truth(fig,gs[2,0],model_dict,"pt","probability",10)
+    profile_hist_plotter_truth(fig,gs[3,0],model_dict,"eta","probability",10)
+    predict_count_plotter(fig,gs[4,0],model_dict)
+    fig.suptitle(f'{model_name} Inference Run Analysis',fontsize=16)
+    fig.savefig(f'{model_name}_inference_report.png')
     plt.show()
 
 
