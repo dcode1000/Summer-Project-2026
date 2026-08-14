@@ -122,187 +122,227 @@ def data_histogrammer(x_data,y_data,bins):
     return means, sems
 
 ### Profile Histogram
-def profile_hist_plotter(fig,gs_cell,x_data,y_data,bin_number,x_name,y_name,model_name,x_units,comp_mode=False,comp_x_data=None,comp_y_data=None):
+
+def profile_hist_plotter(fig,gs_cell,model_dict,x_data,y_data,bin_number):
     """
     creates an approximate profile histogram by plotting the mean and sem of the y data at the midpoint of the binned x data
     Inputs
-    - x_data: data that will be histogrammed along the x axis
-    - y_data: data which will provide the mean and sem values for the y axis
+    - model_dict: dictionary containing all loaded models and relevant information
+    - x_data: specifies plotting a profile histogram with either pt or eta
+    - y_data: specifies whether to plot a profile histogram with either probabilities or scores
     - bin_number: number of bins to separate the data into
-    - x_name: name of x data to be plotted
-    - y_name: name of y data to be plotted
-    - model_name: name of inference run model
-    - x_units: units of x_data
-    - comp_mode: determines whether there is a baseline model output to be plotted for comparison against the training model output
-    - comp_x_data: comparison x data, of the same type as x_data
-    - comp_y_data: comparison y data of the same type as y_data
     """
     inner = gs_cell.subgridspec(3,2,height_ratios=[0.15, 1, 1])
     title_ax = fig.add_subplot(inner[0, :])
     title_ax.axis("off")
-    title_ax.set_title(rf'{model_name} Predicted Jet Flavour Probability Against {x_name}')
 
+    flav_classes = ["b","c","light","tau"]
+    
+    plot_config = {
+        "pt": {
+            "label": r"$p_T$",
+            "units": "(GeV)",
+            "values": lambda model: model["pt_vals"],
+        },
+        "eta": {
+            "label": r"$\eta$",
+            "units": "",
+            "values": lambda model: model["eta_vals"],
+        },
+        "probability": {
+            "label": "Tag Probability",
+            "values": lambda model: model["probs"],
+        },
+        "scores": {
+            "label": "Tag Probability",
+            "values": lambda model: model["scores"],
+        }
+    }
+    
+
+    x_config = plot_config[x_data]
+    x_name = x_config["label"]
+    x_units = x_config["units"]
+    
+    y_config = plot_config[y_data]
+    y_name = y_config["label"]
+
+    source_handles = [Line2D([0], [0],color=model_dict[model_name]["plot_colour"],lw=2,marker="^",markersize=5,label=f"{model_name}",)
+                      for model_name in model_dict]
+
+    title_ax.set_title(rf'Model Tagging Probability For Each Flavour Against {x_name}')
+    
     for n in range(4):
-        y = y_data[:,n]
-        bin_edges, bin_centers, bin_hwidth = binner(x_data,bin_number)
-        means,sems = data_histogrammer(x_data,y,bin_edges)
         ax = fig.add_subplot(inner[1+n // 2, n % 2])
-        ax.errorbar(x=bin_centers, y=means, xerr=bin_hwidth, yerr=sems, linestyle='none', marker='^',ms=5,color="cornflowerblue",capsize=2)
-
-        if comp_mode:
-            comp_y = comp_y_data[:,n]
-            means_comp,sems_comp = data_histogrammer(x_data,comp_y,bin_edges)
-            ax.errorbar(x=bin_centers, y=means_comp, xerr=bin_hwidth, yerr=sems_comp, linestyle='none', marker='^',ms=5,color="orange",capsize=2)
+        for model_name, model in model_dict.items():
+            x_vals = x_config["values"](model)
+            y_vals = y_config["values"](model)
+    
+            y = y_vals[:,n]
+            bin_edges, bin_centers, bin_hwidth = binner(x_vals,bin_number)
+            means,sems = data_histogrammer(x_vals,y,bin_edges)
+            
+            ax.errorbar(x=bin_centers, y=means, xerr=bin_hwidth, yerr=sems, linestyle='none', 
+                        marker='^',ms=5,color=model["plot_colour"],capsize=2)
             if n == 0:
-                source_handles = [Line2D([0], [0], color='cornflowerblue', lw=2, label=f'{model_name} Output'),
-                                Line2D([0], [0], color='orange', lw=2, label='Baseline Comparison \n Model'),]
-                ax.legend(handles=source_handles,loc="center left",bbox_to_anchor=(1.02, 0.5),fontsize=8)
+                ax.legend(
+                    handles=source_handles,
+                    loc="center left",
+                    bbox_to_anchor=(1.02, 0.5),
+                    fontsize=8,)
 
-        if x_units == None:
-            ax.set_xlabel(rf'{x_name}')
-        else:
-            ax.set_xlabel(rf'{x_name} ({x_units})')
-
-        ax.set_ylabel(rf'{y_name}')
-        ax.set_title(rf'{model_name} Predicted {flav_classes[n]}-jet Probabilities')
+        ax.set_ylim(0,1)
+        ax.set_title(rf'{flav_classes[n]}-jet')
+        ax.set_xlabel(rf"{x_name} {x_units}")
+        ax.set_ylabel(rf"{y_name}")
         ax.grid()
 
 ### Truth Sorted Profile Histogram
 
-def profile_hist_plotter_truth(fig,
-                               gs_cell,
-                               x_data,
-                               y_data,
-                               truth_flavour,
-                               bin_number,
-                               x_name,
-                               y_name,
-                               model_name,
-                               x_units,
-                               comp_mode=False,
-                               comp_x_data=None,
-                               comp_y_data=None,
-                               comp_truth_flavour=None):
+def profile_hist_plotter_truth(fig,gs_cell,model_dict,x_data,y_data,bin_number):
     """
     creates an approximate profile histogram by plotting the mean and sem of the y data at the midpoint of the binned x data, sorted by truth value of jets
     Inputs
-    - x_data: data that will be histogrammed along the x axis
-    - y_data: data which will provide the mean and sem values for the y axis
-    - truth_flavour: actual flavour each jet corresponds to
+    - model_dict: dictionary containing all loaded models and relevant information
+    - x_data: specifies plotting a profile histogram with either pt or eta
+    - y_data: specifies whether to plot a profile histogram with either probabilities or scores
     - bin_number: number of bins to separate the data into
-    - x_name: name of x data to be plotted
-    - y_name: name of y data to be plotted
-    - model_name: name of inference run model
-    - x_units: units of x_data
-    - comp_mode: determines whether there is a baseline model output to be plotted for comparison against the training model output
-    - comp_x_data: comparison x data, of the same type as x_data
-    - comp_y_data: comparison y data of the same type as y_data
-    - comp_truth_flavour: comparison truth flavour of all jets in comp data
     Returns:
     Subplots organised by model predicted flavour (is predicted flavour of training model if in comp mode)
     Requires:
     matplotlib, matplotlib.lines import Line2D, numpy, scipy
     """
     inner = gs_cell.subgridspec(3,2,height_ratios=[0.15, 1, 1])
-    marker_styles = ["o","^","s","x"]
-    linestyles = ["solid","dotted","dashed","dashdot"]
+
+    marker_dict = {"b":"o","c":"^","light":"s","tau":"x"}
+    flav_classes = ["b","c","light","tau"]
+    
+    plot_config = {
+        "pt": {
+            "label": r"$p_T$",
+            "units": "(GeV)",
+            "values": lambda model: model["pt_vals"],
+        },
+        "eta": {
+            "label": r"$\eta$",
+            "units": "",
+            "values": lambda model: model["eta_vals"],
+        },
+        "probability": {
+            "label": "Tag Probability",
+            "values": lambda model: model["probs"],
+        },
+        "scores": {
+            "label": "Tag Probability",
+            "values": lambda model: model["scores"],
+        }
+    }
+    x_config = plot_config[x_data]
+    x_name = x_config["label"]
+    x_units = x_config["units"]
+    
+    y_config = plot_config[y_data]
+    y_name = y_config["label"]
 
     title_ax = fig.add_subplot(inner[0, :])
     title_ax.axis("off")
-    title_ax.set_title(rf'{model_name} Jet Flavour Probability Grouped By Truth Flavour \n Against {x_name}')
-
-    x_data = np.asarray(x_data)
-    y_data = np.asarray(y_data)
-    truth_flavour = np.asarray(truth_flavour)
-
-    bin_edges, bin_centers, bin_hwidth = binner(x_data,bin_number)
-
-
+    title_ax.set_title(rf'Tagging Probability By Truth Flavour Against {x_name}')
+    
     for n in range(4):
         ax = fig.add_subplot(inner[1+n // 2, n % 2])
-        i = 0
-        for flavour in np.unique(truth_flavour):
-            truth_mask = (truth_flavour == flavour)
-            x_j = x_data[truth_mask]
-            y_j = y_data[truth_mask,n]
+        for model_name, model in model_dict.items():
+            i = 0
+            for flavour in np.unique(model["truth_flavour"]):
+                x_vals = x_config["values"](model)
+                y_vals = y_config["values"](model)
+                bin_edges, bin_centers, bin_hwidth = binner(x_vals,bin_number)
+                truth_mask = (model["truth_flavour"] == flavour)
+                x_j = x_vals[truth_mask]
+                y_j = y_vals[truth_mask,n]
+                
+                means,sems = data_histogrammer(x_j,y_j,bin_edges)
+    
+                ax.errorbar(x=bin_centers, y=means,xerr=bin_hwidth, yerr=sems, linestyle=" ", marker=marker_dict[flavour],
+                            ms=6,color=model["plot_colour"],capsize=2)
 
-            means,sems = data_histogrammer(x_j,y_j,bin_edges)
-
-            ax.errorbar(x=bin_centers, y=means,xerr=bin_hwidth, yerr=sems, linestyle=" ", marker=marker_styles[i],
-                        ms=8,color="cornflowerblue",capsize=2,label=flavour)
-            if comp_mode:
-                comp_truth_mask = (comp_truth_flavour == flavour)
-                comp_x_j = comp_x_data[comp_truth_mask]
-                comp_y_j = comp_y_data[comp_truth_mask,n]
-
-                comp_means,comp_sems = data_histogrammer(comp_x_j,comp_y_j,bin_edges)
-
-                ax.errorbar(x=bin_centers, y=comp_means,xerr=bin_hwidth, yerr=comp_sems, linestyle=" ", marker=marker_styles[i]
-                            ,ms=8,color="orange",capsize=2,alpha=0.8)
-            if x_units == None:
-                ax.set_xlabel(rf'{x_name}')
-            else:
-                ax.set_xlabel(rf'{x_name} ({x_units})')
+            ax.set_xlabel(rf'{x_name} {x_units}')
             ax.set_ylabel(rf'{y_name}')
-            ax.set_title(rf'Model Predicted {flav_classes[n]}-jet Probabilities')
+            ax.set_ylim(0,1)
+            ax.set_title(rf'Model Predicted {flav_classes[n]}-jet')
 
             i +=1
         if n == 0:
-            data_legend = ax.legend(title="Jet Truth Flavour",loc="center left",bbox_to_anchor=(1.02, 0.5),fontsize=8,)
-
-            if comp_mode:
-                source_handles = [Line2D([0], [0], color="cornflowerblue", marker="o",linestyle="None", label=f'{model_name} Output'),
-                                Line2D([0], [0], color="orange", marker="o",linestyle="None", label="Baseline Comparison \n Model Output"),]
-
-                source_legend = ax.legend(handles=source_handles,loc="center left",bbox_to_anchor=(1.02, 0),fontsize=8,)
-                ax.add_artist(data_legend)
+        
+            # Legend for truth flavour (marker style)
+            truth_handles = [Line2D([0], [0],color="tab:blue",marker=marker_dict[flavour],linestyle="None",markersize=6,label=flavour,)
+                for i, flavour in enumerate(np.unique(model["truth_flavour"]))]
+        
+            truth_legend = ax.legend(
+                handles=truth_handles,
+                title="Jet Truth Flavour",
+                loc="center left",
+                bbox_to_anchor=(1.02, 0.5),
+                fontsize=8,
+            )
+        
+            # Legend for model (colour)
+            source_handles = [Line2D([0], [0],color=model_dict[model_name]["plot_colour"],marker="o",linestyle="None",markersize=5,label=model_name,)
+                for model_name in model_dict]
+        
+            source_legend = ax.legend(handles=source_handles,title="Model",loc="center left",bbox_to_anchor=(1.02, 0.0),fontsize=8,)
+            # Keep both legends
+            ax.add_artist(truth_legend)
         ax.grid()
 
 ### plotting classed jets by truth flavour by confidence threshold
 
-def predict_count_plotter(fig,gs_cell,counts_dict,confidences,model_name,comp_mode=False,comp_counts_dict=None):
+def predict_count_plotter(fig,gs_cell,model_dict):
     """
     for an input dictionary of flavour counts of various labels, plots a graph for each predicted flavour with a line for the counts at each confidence
     organised by truth label
     inputs:
-    counts_dict: dictionary of counts - each row is counts for all four truth flavours, each key corresponds to a different predicted flavour
-    confidences: list of confidence thresholds used to determine counts_dict
-    model_name: name of inference run model 
-    comp_mode: determines if comparing inference output to a baseline model
-    comp_counts_dict: if comp_mode == True is the counts dict for the comparison data
+    model_dict: dictionary of trained models and associated data
     returns:
     plot with 4 subplots
     Requires:
     matplotlib, matplotlib.lines import Line2D, numpy, scipy
     """
     inner = gs_cell.subgridspec(3,2,height_ratios=[0.10, 1, 1])
-    linestyles = ["solid","dotted","dashed","dashdot"]
+    line_dict = {"b":"solid","c":"dotted","light":"dashed","tau":"dashdot"}
 
     title_ax = fig.add_subplot(inner[0, :])
     title_ax.axis("off")
-    title_ax.set_title(f'{model_name} Jet Flavour Classification Grouped By Jet Truth Flavour\nAgainst Classification Threshold')
-
+    title_ax.set_title("Model Predicted Jet Classification By Jet Truth Flavour\n""Against Classification Threshold")
+    
     jet_flavours = ["b", "c", "light", "tau"]
     for n in range(4):
         ax = fig.add_subplot(inner[1+n// 2, n % 2])
-        for i in range(len(jet_flavours)):
-            flav_counts = [row[i] for row in counts_dict[jet_flavours[n]]]
-            ax.plot(confidences,flav_counts,label=jet_flavours[i],color="cornflowerblue",linestyle=linestyles[i])
-            if comp_mode:
-                comp_flav_counts = [row[i] for row in comp_counts_dict[jet_flavours[n]]]
-                ax.plot(confidences,comp_flav_counts,color="orange",linestyle=linestyles[i]) 
-        ax.set_title(rf'Model Predicted {jet_flavours[n]}-jet')
-        ax.set_xlabel("Classification Threshold")
-        ax.set_ylabel("Fraction of Jets Classified")
+        for model_name, model in model_dict.items():
+            for i in range(len(jet_flavours)):
+                flav_counts = [row[i] for row in model["counts_dict"][jet_flavours[n]]]
+                ax.plot(model["confidences"],flav_counts,label=jet_flavours[i],color=model["plot_colour"],linestyle=line_dict[jet_flavours[i]])
+            ax.set_title(rf'Model Predicted {jet_flavours[n]}-jet')
+            ax.set_xlabel("Classification Threshold")
+            ax.set_ylabel("Fraction of Classified Jets")
+            ax.set_ylim(-0.01,1.01)
         if n == 0:
-            data_legend = ax.legend(title="Jet Truth Flavour",loc="center left",bbox_to_anchor=(1.02, 0.5),fontsize=8,)
-
-            if comp_mode:
-                source_handles = [Line2D([0], [0], color="cornflowerblue", marker="o",linestyle="None", label=f'{model_name} Output'),
-                                Line2D([0], [0], color="orange", marker="o",linestyle="None", label="Baseline Comparison \n Model Output"),]
-
-                source_legend = ax.legend(handles=source_handles,loc="center left",bbox_to_anchor=(1.02, 0),fontsize=8,)
-                ax.add_artist(data_legend)
-
+            truth_handles = [Line2D([0], [0],color="tab:blue",linestyle=line_dict[flavour],markersize=6,label=flavour,)
+                for i, flavour in enumerate(np.unique(model["truth_flavour"]))]
+        
+            truth_legend = ax.legend(
+                handles=truth_handles,
+                title="Jet Truth Flavour",
+                loc="center left",
+                bbox_to_anchor=(1.02, 0.5),
+                fontsize=8,
+            )
+        
+            # Legend for model (colour)
+            source_handles = [Line2D([0], [0],color=model_dict[model_name]["plot_colour"],marker="o",linestyle="None",markersize=5,label=model_name,)
+                for model_name in model_dict]
+        
+            source_legend = ax.legend(handles=source_handles,title="Model",loc="center left",bbox_to_anchor=(1.02, 0.0),fontsize=8,)
+            # Keep both legends
+            ax.add_artist(truth_legend)
         ax.grid()
 
