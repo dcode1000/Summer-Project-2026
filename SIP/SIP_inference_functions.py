@@ -9,9 +9,67 @@ import h5py, hdf5plugin, numpy as np, pandas as pd, torch
 import matplotlib.pyplot as plt
 from salt.modelwrapper import ModelWrapper
 import scipy.stats as stats
+import yaml
 from matplotlib.lines import Line2D
 
 ### Data Preparation
+def config_parser(config_file):
+    """
+    Config parser that takes in a .yaml config file and extracts appropriate information. For comparing multiple models, a separate list_dict is created for the
+    variables of each model
+    Inputs:
+    - config_file: .yaml file containing SIP config information
+    returns:
+    - test_file: file used to run inference on the models
+    - sample_size: sample size for analysis
+    - stored: name of a model for comparison with the returns of the model with which inference is being run on
+    - low_pt_cutoff: the minimum pt value a jet needs to have
+    - high_pt_cutoff: the maximum pt value a jet can have
+    - model_dict: dictionary of model dictionaries. Each dictionary contains model name, location of a checkpoint file of the trained model and list of variables used in training the
+    model,  also contains a norm_dict of relevant variables for running
+    inference on
+    """
+    with open(config_file) as f:
+        cfg = yaml.load(f, Loader=yaml.FullLoader)
+        test_file = cfg["test_file"]
+        sample_size = cfg["sample_size"]
+        stored = cfg["stored"]
+        low_pt_cutoff = cfg["low_pt_cutoff"]
+        high_pt_cutoff = cfg["high_pt_cutoff"]
+        
+        model_dict = cfg["models"]
+
+    with open(cfg["norm_dict"]) as g:
+        norm = yaml.load(g, Loader=yaml.FullLoader)
+    
+        for model_name, model in model_dict.items():
+            model["norm_dict"] = {}
+    
+            for var_type, variables in model["inference_variables"].items():
+    
+                if var_type not in norm:
+                    raise KeyError(
+                        f"Variable type '{var_type}' for model '{model_name}' "
+                        f"is missing from the normalization dictionary."
+                    )
+    
+                model["norm_dict"][var_type] = {}
+    
+                for variable in variables:
+    
+                    if variable not in norm[var_type]:
+                        raise KeyError(
+                            f"Variable '{variable}' in variable type '{var_type}' "
+                            f"for model '{model_name}' "
+                            f"is missing from the normalization dictionary."
+                        )
+    
+                    model["norm_dict"][var_type][variable] = norm[var_type][variable]
+        
+                    
+
+    return test_file, sample_size, stored, low_pt_cutoff, high_pt_cutoff, model_dict
+
 def analysis_config_parser(config_file):
     """
     reads in a config file (.txt) which tells it which datasets and the columns of those datasets to select from an h5 file for running inference/input
