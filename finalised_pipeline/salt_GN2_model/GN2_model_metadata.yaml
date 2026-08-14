@@ -1,0 +1,347 @@
+train_file: /nfs/users/drobbie/open_data_pp_output/pp_output_train.h5
+val_file: /nfs/users/drobbie/open_data_pp_output/pp_output_val.h5
+num_train: 53500000
+num_val: 5350000
+batch_size: 3000
+trainable_params: 2339150
+num_gpus: 2
+gpu_ids:
+- 0
+- 1
+num_workers: 40
+available_train: 53500000
+num_unique_jets_train: 53421776
+dsids: '[''open_data'']'
+jet_counts_train:
+  lowpt_ttbar_bjets:
+    num_jets: 13000000
+    unique_jets: 12997697
+  lowpt_ttbar_cjets:
+    num_jets: 13000000
+    unique_jets: 13000000
+  lowpt_ttbar_ujets:
+    num_jets: 26000000
+    unique_jets: 25997421
+  lowpt_ttbar_taujets:
+    num_jets: 1500000
+    unique_jets: 1426658
+  total:
+    num_jets: 53500000
+    unique_jets: 53421776
+pp_config_train:
+  variables:
+    jets:
+      inputs:
+      - pt_btagJes
+      - eta_btagJes
+      labels:
+      - HadronConeExclTruthLabelID
+      - HadronConeExclExtendedTruthLabelID
+      - HadronGhostTruthLabelID
+      - HadronGhostExtendedTruthLabelID
+      - pt
+      - eta
+      - mass
+      - eventNumber
+    tracks:
+      inputs:
+      - d0
+      - z0SinTheta
+      - dphi
+      - deta
+      - qOverP
+      - lifetimeSignedD0Significance
+      - lifetimeSignedZ0SinThetaSignificance
+      - phiUncertainty
+      - thetaUncertainty
+      - qOverPUncertainty
+      - numberOfPixelHits
+      - numberOfSCTHits
+      - numberOfInnermostPixelLayerHits
+      - numberOfNextToInnermostPixelLayerHits
+      - numberOfInnermostPixelLayerSharedHits
+      - numberOfInnermostPixelLayerSplitHits
+      - numberOfPixelSharedHits
+      - numberOfPixelSplitHits
+      - numberOfSCTSharedHits
+      - valid
+      labels:
+      - ftagTruthOriginLabel
+      - ftagTruthVertexIndex
+  global_cuts:
+    train:
+    - - eventNumber
+      - '%10<='
+      - 7
+    val:
+    - - eventNumber
+      - '%10=='
+      - 8
+    test:
+    - - eventNumber
+      - '%10=='
+      - 9
+  ttbar:
+    name: ttbar
+    equal_jets: false
+    pattern:
+    - /nfs/users/drobbie/open_data/*.h5
+  lowpt:
+    name: lowpt
+    cuts:
+    - - pt_btagJes
+      - '>'
+      - 20000
+    - - pt_btagJes
+      - <
+      - 250000
+  components:
+  - region:
+      name: lowpt
+      cuts:
+      - - pt_btagJes
+        - '>'
+        - 20000
+      - - pt_btagJes
+        - <
+        - 250000
+    sample:
+      name: ttbar
+      equal_jets: false
+      pattern:
+      - /nfs/users/drobbie/open_data/*.h5
+    flavours:
+    - bjets
+    - cjets
+    num_jets: 13000000
+  - region:
+      name: lowpt
+      cuts:
+      - - pt_btagJes
+        - '>'
+        - 20000
+      - - pt_btagJes
+        - <
+        - 250000
+    sample:
+      name: ttbar
+      equal_jets: false
+      pattern:
+      - /nfs/users/drobbie/open_data/*.h5
+    flavours:
+    - ujets
+    num_jets: 26000000
+  - region:
+      name: lowpt
+      cuts:
+      - - pt_btagJes
+        - '>'
+        - 20000
+      - - pt_btagJes
+        - <
+        - 250000
+    sample:
+      name: ttbar
+      equal_jets: false
+      pattern:
+      - /nfs/users/drobbie/open_data/*.h5
+    flavours:
+    - taujets
+    num_jets: 1500000
+  resampling:
+    target: cjets
+    method: countup
+    sampling_fraction: auto
+    variables:
+      pt_btagJes:
+        bins:
+        - - 20000
+          - 250000
+          - 50
+      eta_btagJes:
+        bins:
+        - - -2.5
+          - 2.5
+          - 40
+  global:
+    jets_name: jets
+    batch_size: 1000000
+    num_jets_estimate: 25000000
+    base_dir: /nfs/users/drobbie
+    ntuple_dir: /nfs/users/drobbie/open_data
+    out_dir: /nfs/users/drobbie/open_data_pp_output
+  upp_hash: v0.2.7
+object_classes:
+  0: bjets
+  1: cjets
+  2: ujets
+  3: taujets
+available_val: 5350000
+num_unique_jets_val: 5302768
+jet_counts_val:
+  lowpt_ttbar_bjets:
+    num_jets: 1300000
+    unique_jets: 1293139
+  lowpt_ttbar_cjets:
+    num_jets: 1300000
+    unique_jets: 1300000
+  lowpt_ttbar_ujets:
+    num_jets: 2600000
+    unique_jets: 2584091
+  lowpt_ttbar_taujets:
+    num_jets: 150000
+    unique_jets: 125538
+  total:
+    num_jets: 5350000
+    unique_jets: 5302768
+pp_config_val:
+  variables:
+    jets:
+      inputs:
+      - pt_btagJes
+      - eta_btagJes
+      labels:
+      - HadronConeExclTruthLabelID
+      - HadronConeExclExtendedTruthLabelID
+      - HadronGhostTruthLabelID
+      - HadronGhostExtendedTruthLabelID
+      - pt
+      - eta
+      - mass
+      - eventNumber
+    tracks:
+      inputs:
+      - d0
+      - z0SinTheta
+      - dphi
+      - deta
+      - qOverP
+      - lifetimeSignedD0Significance
+      - lifetimeSignedZ0SinThetaSignificance
+      - phiUncertainty
+      - thetaUncertainty
+      - qOverPUncertainty
+      - numberOfPixelHits
+      - numberOfSCTHits
+      - numberOfInnermostPixelLayerHits
+      - numberOfNextToInnermostPixelLayerHits
+      - numberOfInnermostPixelLayerSharedHits
+      - numberOfInnermostPixelLayerSplitHits
+      - numberOfPixelSharedHits
+      - numberOfPixelSplitHits
+      - numberOfSCTSharedHits
+      - valid
+      labels:
+      - ftagTruthOriginLabel
+      - ftagTruthVertexIndex
+  global_cuts:
+    train:
+    - - eventNumber
+      - '%10<='
+      - 7
+    val:
+    - - eventNumber
+      - '%10=='
+      - 8
+    test:
+    - - eventNumber
+      - '%10=='
+      - 9
+  ttbar:
+    name: ttbar
+    equal_jets: false
+    pattern:
+    - /nfs/users/drobbie/open_data/*.h5
+  lowpt:
+    name: lowpt
+    cuts:
+    - - pt_btagJes
+      - '>'
+      - 20000
+    - - pt_btagJes
+      - <
+      - 250000
+  components:
+  - region:
+      name: lowpt
+      cuts:
+      - - pt_btagJes
+        - '>'
+        - 20000
+      - - pt_btagJes
+        - <
+        - 250000
+    sample:
+      name: ttbar
+      equal_jets: false
+      pattern:
+      - /nfs/users/drobbie/open_data/*.h5
+    flavours:
+    - bjets
+    - cjets
+    num_jets: 13000000
+  - region:
+      name: lowpt
+      cuts:
+      - - pt_btagJes
+        - '>'
+        - 20000
+      - - pt_btagJes
+        - <
+        - 250000
+    sample:
+      name: ttbar
+      equal_jets: false
+      pattern:
+      - /nfs/users/drobbie/open_data/*.h5
+    flavours:
+    - ujets
+    num_jets: 26000000
+  - region:
+      name: lowpt
+      cuts:
+      - - pt_btagJes
+        - '>'
+        - 20000
+      - - pt_btagJes
+        - <
+        - 250000
+    sample:
+      name: ttbar
+      equal_jets: false
+      pattern:
+      - /nfs/users/drobbie/open_data/*.h5
+    flavours:
+    - taujets
+    num_jets: 1500000
+  resampling:
+    target: cjets
+    method: countup
+    sampling_fraction: auto
+    variables:
+      pt_btagJes:
+        bins:
+        - - 20000
+          - 250000
+          - 50
+      eta_btagJes:
+        bins:
+        - - -2.5
+          - 2.5
+          - 40
+  global:
+    jets_name: jets
+    batch_size: 1000000
+    num_jets_estimate: 25000000
+    base_dir: /nfs/users/drobbie
+    ntuple_dir: /nfs/users/drobbie/open_data
+    out_dir: /nfs/users/drobbie/open_data_pp_output
+  upp_hash: v0.2.7
+salt_hash: null
+out_dir: /nfs/users/drobbie/final_GN2_model/logs/GN2_model_20260812-T132140
+log_url: null
+timestamp: GN2_model_20260812-T132140
+torch_version: 2.12.0+cu130
+lightning_version: 2.6.1
+cuda_version: '13.0'
+hostname: gpu02.ppe.gla.ac.uk
