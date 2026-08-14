@@ -70,65 +70,6 @@ def config_parser(config_file):
 
     return test_file, sample_size, stored, low_pt_cutoff, high_pt_cutoff, model_dict
 
-def analysis_config_parser(config_file):
-    """
-    reads in a config file (.txt) which tells it which datasets and the columns of those datasets to select from an h5 file for running inference/input
-    into a trained model. Returns a a list for each dataset of relevant columns
-    inputs:
-    - config_file: contains heading "variables" under this are further headings which correspond to datasets of the h5 file. Under these are bulletpoints
-    pertaining to the relevant columns of the dataset to be selected
-    returns:
-    - NORM: path to normalisation dictionary for the trained model
-    - N: sample size for analysis
-    - STORED: name of a model for comparison with the returns of the model with which inference is being run on
-    - low_pt_cutoff: the minimum pt value a jet needs to have
-    - high_pt_cutoff: the maximum pt value a jet can have
-    - list_dict: dictionary with each key corresponding to a dataset name and the value being a list of columns to be taken from that dataset
-    """
-    with open(config_file, "r") as file:
-        # Skip everything until "variables:"
-        for line in file:
-            if line.startswith("test_file: "):
-                TEST_FILE = line.split("test_file: ",1)[1] # is the h5 dataset for running inference on
-                TEST_FILE = TEST_FILE.strip()
-            if line.startswith("comp_baseline_data: "):
-                COMP_BASELINE_DATA = line.split("comp_baseline_data: ",1)[1] # csv file containing comparison jet flavour
-                                                    # probabilities and corresponding jet pt, eta vals and truth flavours
-                COMP_BASELINE_DATA = COMP_BASELINE_DATA.strip()
-            if line.startswith("model_name: "):
-                MODEL_NAME = line.split("model_name: ",1)[1]
-                MODEL_NAME = MODEL_NAME.strip()
-            if line.startswith("norm_dict: "):
-                NORM = line.split("norm_dict: ",1)[1]
-                NORM = NORM.strip()
-            if line.startswith("sample_size: "):
-                N = int(line.split("sample_size: ",1)[1])
-            if line.startswith("stored: "):
-                STORED = line.split("stored: ",1)[1]
-                STORED = STORED.strip()
-            if line.startswith("low_pt_cutoff: "):
-                low_pt_cutoff = int(line.split("low_pt_cutoff: ",1)[1])
-            if line.startswith("high_pt_cutoff: "):
-                high_pt_cutoff = int(line.split("high_pt_cutoff: ",1)[1])
-            if line.strip() == "variables:":
-                break
-
-        list_dict = {}
-        current_key = None
-
-        for line in file:
-            line = line.strip()
-
-            if not line:  # Skip blank lines
-                continue
-
-            if line.endswith(":"):
-                current_key = line[:-1]  # Remove the colon
-                list_dict[current_key] = []
-            elif current_key is not None:
-                list_dict[current_key].append(line.strip()[2:])
-        return TEST_FILE,COMP_BASELINE_DATA,MODEL_NAME,NORM,N,STORED,low_pt_cutoff,high_pt_cutoff,list_dict
-
 def h5_test_datafile_prepper(h5_file,list_dict,sample_size,STORED,lower_pt_cutoff,upper_pt_cutoff):
     """
     Takes in an h5 file of data to run inference on, and a dictionary of lists of variables that the machine model has been trained on. Returns a
@@ -150,15 +91,14 @@ def h5_test_datafile_prepper(h5_file,list_dict,sample_size,STORED,lower_pt_cutof
     """
     data_dict = {key: 0 for key in list_dict.keys()} # creating a dictionary with the same shape as the input list dictionary
     pad_dict = {}
-
+    
     with h5py.File(h5_file, "r") as f:
-
+    
         pt = f["jets"]["pt_btagJes"][:] # only sampling jets from the desired pt range
-
         indices = np.where((pt >= lower_pt_cutoff) & (pt <= upper_pt_cutoff))[0][:sample_size] # identifying the indices of the first sample size number of jets
 
         ### extracting other necessary variables from h5 dataset
-
+        
         jets = f["jets"]
         comp_vals = np.stack([jets[f"{STORED}_pb"],jets[f"{STORED}_pc"],jets[f"{STORED}_pu"],jets[f"{STORED}_ptau"],], axis=1)[indices] 
                             # output from another model, for the same jets
@@ -172,46 +112,84 @@ def h5_test_datafile_prepper(h5_file,list_dict,sample_size,STORED,lower_pt_cutof
 
         for key in data_dict.keys():
             data_dict[key] = f[key][indices] # putting the correctly sized datasets for jets within the desired pt range onto their corresponding key
-
-
+    
+    
     for key in data_dict.keys():
-
+    
         if key == "tracks" or key == "truth_hadrons": # tracks requires masking due to the "valid" column
-
+    
             dset = data_dict[key] # the data_dict["tracks"] currently contains all track data columns
-
+            
             pad = ~dset["valid"].astype(bool)  # identifying where tracks not valid
             pad_dict[key] = torch.from_numpy(pad) # creating a mask for these
-
+    
             x = np.stack([dset[v] for v in list_dict[key]],axis=-1).astype(np.float32) # stacking all required columns from the input list_dict
             x = np.nan_to_num(x,nan=0.0)
             x = torch.from_numpy(x) # creating a tensor of the same datatype as the numpy data array
-
+    
             x[pad_dict[key]] = 0.0 # setting the invalid track params to 0
-
+    
             data_dict[key] = x  # setting the tensor to be the value of the "tracks" key
 
+            
         else:
-
+    
             x = np.stack([data_dict[key][v] for v in list_dict[key]],axis=-1).astype(np.float32) # stacking the appropriate parameters
             data_dict[key] = torch.from_numpy(x) # setting the value of the key to be a tensor containing the appropriate parameters
-
+    
     return data_dict,pad_dict,comp_probs,truth_flavours,pt_vals,eta_vals
 
 ### Loading Model
-def model_loader(CKPT,NORM):
+def model_loader(ckpt, norm_file):
     """
     Instantiates a model from a lightning wrapper and a lightning checkpoint. Requires no inputs except previously defined parameters.
+    Inputs:
+    - ckpt: .ckpt file containing trained model
+    - norm_dict: dictionary containing normalisation parameters of all training variables
     Returns:
     - model: Is a loaded salt model of type ModelWrapper from salt-ml package
     Requires:
-    - torch, torch lightning, salt-ml (version 0.9.0)
+    - torch, torch lightning, salt-ml 
     """
-    norm_config = dict(torch.load(CKPT, map_location="cpu", weights_only=False)["hyper_parameters"]["norm_config"]) # extracting norm_config from the checkpoint
+    checkpoint = torch.load(ckpt,map_location="cpu",weights_only=False)
+    
+    hparams = checkpoint["hyper_parameters"]
+    
+    # Remove class weights from the loss configuration.
+    # They are not needed for inference and cause jsonargparse
+    # to reject the checkpoint because they are stored as lists.
+    for task in hparams["model"]["init_args"]["tasks"]["init_args"]["modules"]:
+        loss = task["init_args"].get("loss")
+    
+        if loss is not None:
+            loss["init_args"]["weight"] = None
+    
+    # Get the normalization configuration
+    norm_config = dict(hparams["norm_config"])
+    
+    # Replace the checkpoint's norm dictionary with the one selected by the user/configuration.
+    norm_config["norm_dict"] = norm_file
 
-    norm_config["norm_dict"] = NORM # attaching the norm dictionary into the norm config
+    hparams["norm_config"] = norm_config
 
-    model = ModelWrapper.load_from_checkpoint(CKPT, map_location="cpu", norm_config=norm_config,weights_only=False).eval() # loading the model using the lightning method
+    # Remove the corresponding loss-weight buffers
+    # from the checkpoint state_dict.
+    state_dict = checkpoint["state_dict"]
+
+    keys_to_remove = [
+        key for key in state_dict
+        if key.endswith(".loss.weight")
+    ]
+
+    for key in keys_to_remove:
+        del state_dict[key]
+    
+    checkpoint["hyper_parameters"] = hparams
+    checkpoint["state_dict"] = state_dict
+    
+    torch.save(checkpoint, "inference_checkpoint.ckpt")
+
+    model = ModelWrapper.load_from_checkpoint("inference_checkpoint.ckpt", map_location="cpu", norm_config=norm_config).eval() # loading the model using the lightning method
                     # to load directly from the checkpoint, also setting the model to eval mode
     return model
 
