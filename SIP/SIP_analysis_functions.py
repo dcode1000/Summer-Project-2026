@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
-
 ### Salt Inference Pipeline - Analysis Functions
 # All functions used to analyse and plot and compare model outputs
 import h5py, hdf5plugin, numpy as np, pandas as pd, torch
