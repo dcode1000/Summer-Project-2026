@@ -45,15 +45,15 @@ save_mode = args.save_mode # saves output jet flavour probabilities, pt, eta and
 
 ### Running Inference
 if analysis_mode:
-    test_file, sample_size, stored, low_pt_cutoff, high_pt_cutoff, model_dict, plot_dict = config_parser(CONFIG, analysis_mode)
+    test_file, sample_size, stored, low_pt_cutoff, high_pt_cutoff, model_dict, plot_dict = SIP_if.config_parser(CONFIG, analysis_mode)
 else:
-    test_file, sample_size, stored, low_pt_cutoff, high_pt_cutoff, model_dict = config_parser(CONFIG, analysis_mode)
+    test_file, sample_size, stored, low_pt_cutoff, high_pt_cutoff, model_dict = SIP_if.config_parser(CONFIG, analysis_mode)
 
 print(f'Config file: {CONFIG} Parsed')
 for model_name,model in model_dict.items():
     print("")
     print(f'Running Inference On Model: {model_name}')
-    data_dict,pad_dict,comp_probs,truth_flavours,pt_vals,eta_vals = h5_test_datafile_prepper(test_file,model["inference_variables"]
+    data_dict,pad_dict,comp_probs,truth_flavours,pt_vals,eta_vals = SIP_if.h5_test_datafile_prepper(test_file,model["inference_variables"]
                                                                                              ,sample_size,stored,low_pt_cutoff,high_pt_cutoff)
     model["data_dict"] = data_dict
     model["pad_dict"] = pad_dict
@@ -64,10 +64,10 @@ for model_name,model in model_dict.items():
     
     print(f'Test File: {test_file} Prepared')
     ckpt, norm = model["model_checkpoint"], model["norm_dict"]
-    loaded_model = model_loader(ckpt, norm)
+    loaded_model = SIP_if.model_loader(ckpt, norm)
     print(f'Checkpoint Model: {model["model_checkpoint"]} Loaded')
     
-    probs,scores = inference_run(data_dict,pad_dict,loaded_model,return_scores=True)
+    probs,scores = SIP_if.inference_run(data_dict,pad_dict,loaded_model,return_scores=True)
     print(f'Inference Run')
     
     model["probs"] = probs
@@ -75,7 +75,7 @@ for model_name,model in model_dict.items():
     del model["pad_dict"]["REGISTERS"]
     
     if save_mode:
-        save_output(probs,pt_vals,eta_vals,truth_flavours,model_name,ckpt,test_file,CONFIG,sample_size)
+        SIP_if.save_output(probs,pt_vals,eta_vals,truth_flavours,model_name,ckpt,test_file,CONFIG,sample_size)
         print(f'Data saved as: {model_name}_inference_output.csv\nMetadata saved as: {model_name}_inference_run_data.txt')
 
 print("")

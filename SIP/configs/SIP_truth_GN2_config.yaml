@@ -27,7 +27,7 @@ models:
         - Lxy
 
   truth_regression_model:
-    model_checkpoint: ckpts/epoch=013-val_loss=0.62472.ckpt  
+    model_checkpoint: ckpts/truth_regression_epoch=018-val_loss=0.51368.ckpt  
     plot_colour: "tab:green"
     inference_task: jets_prob_regression
     inference_output: scores
