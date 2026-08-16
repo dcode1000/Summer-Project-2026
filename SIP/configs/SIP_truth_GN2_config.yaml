@@ -52,3 +52,22 @@ models:
         - numberOfPixelSharedHits
         - numberOfPixelSplitHits
         - numberOfSCTSharedHits
+
+inference_report:
+  report_title: TEST
+  plots:
+    plot_1:
+      plot_type: profile_histogram
+      x_data: pt
+    plot_2:
+      plot_type: profile_histogram
+      x_data: eta
+    plot_3:
+      plot_type: profile_histogram_truth
+      x_data: pt
+    plot_4:
+      plot_type: profile_histogram_truth
+      x_data: eta
+    plot_5:
+      plot_type: prediction_plot
+
