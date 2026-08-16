@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
-
 ### SIP Inference Pipeline
 
 ### Required Packages
@@ -16,6 +13,12 @@ from matplotlib.lines import Line2D
 ### importing functions
 import SIP_inference_functions as SIP_if
 import SIP_analysis_functions as SIP_af
+
+### overriding warning messages
+import warnings 
+warnings.filterwarnings("ignore", message="invalid value encountered in scalar divide")  
+warnings.filterwarnings("ignore", message="Cannot use flash-varlen backend. No GPU available. Reverting to torch-math.")
+
 
 import argparse
 
