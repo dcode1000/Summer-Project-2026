@@ -31,8 +31,8 @@ models:
     plot_colour: "tab:green"
     inference_task: jets_prob_regression
     inference_output: scores
-    scores_means: [1,1,1,1]
-    scores_stds: [0,0,0,0]
+    scores_means: [0.22814, 0.24812, 0.38965, 0.13409]
+    scores_stds: [0.36566,0.26493,0.36135, 0.27706]
     inference_variables: # variables model requires to run inference on
       jets:
         - pt_btagJes
