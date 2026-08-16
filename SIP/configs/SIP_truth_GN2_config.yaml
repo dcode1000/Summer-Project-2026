@@ -10,6 +10,29 @@ models:
   truth_classification_model:
     model_checkpoint: ckpts/epoch=013-val_loss=0.62472.ckpt  
     plot_colour: "tab:blue"
+    inference_task: jets_classification
+    inference_output: probs
+    inference_variables: # variables model requires to run inference on
+      jets:
+        - pt_btagJes
+        - eta_btagJes
+      truth_hadrons:
+        - pdgId
+        - pt
+        - mass
+        - deta
+        - dphi
+        - decayVertexDPhi
+        - decayVertexZ
+        - Lxy
+
+  truth_regression_model:
+    model_checkpoint: ckpts/epoch=013-val_loss=0.62472.ckpt  
+    plot_colour: "tab:green"
+    inference_task: jets_prob_regression
+    inference_output: scores
+    scores_means: [1,1,1,1]
+    scores_stds: [0,0,0,0]
     inference_variables: # variables model requires to run inference on
       jets:
         - pt_btagJes
@@ -27,6 +50,8 @@ models:
   GN2_model:
     model_checkpoint: ckpts/GN2_model_epoch=010-val_loss=0.59503.ckpt
     plot_colour: "tab:orange"
+    inference_task: jets_classification
+    inference_output: probs
     inference_variables: # variables model requires to run inference on
       jets:
         - pt_btagJes
