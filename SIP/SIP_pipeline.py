@@ -41,11 +41,16 @@ analysis_mode = args.analysis_mode # plots graphs and histograms, make false and
 save_mode = args.save_mode # saves output jet flavour probabilities, pt, eta and truth flavours for comparison to another model
 
 ### Running Inference
-test_file, sample_size, stored, low_pt_cutoff, high_pt_cutoff, model_dict = SIP_if.config_parser(CONFIG)
-print(f'Config file: {CONFIG} Parsed')
+if analysis_mode:
+    test_file, sample_size, stored, low_pt_cutoff, high_pt_cutoff, model_dict, plot_dict = config_parser(CONFIG, analysis_mode)
+else:
+    test_file, sample_size, stored, low_pt_cutoff, high_pt_cutoff, model_dict = config_parser(CONFIG, analysis_mode)
 
+print(f'Config file: {CONFIG} Parsed')
 for model_name,model in model_dict.items():
-    data_dict,pad_dict,comp_probs,truth_flavours,pt_vals,eta_vals = SIP_if.h5_test_datafile_prepper(test_file,model["inference_variables"]
+    print("")
+    print(f'Running Inference On Model: {model_name}')
+    data_dict,pad_dict,comp_probs,truth_flavours,pt_vals,eta_vals = h5_test_datafile_prepper(test_file,model["inference_variables"]
                                                                                              ,sample_size,stored,low_pt_cutoff,high_pt_cutoff)
     model["data_dict"] = data_dict
     model["pad_dict"] = pad_dict
@@ -55,12 +60,11 @@ for model_name,model in model_dict.items():
     model["eta_vals"] = eta_vals
     
     print(f'Test File: {test_file} Prepared')
-
     ckpt, norm = model["model_checkpoint"], model["norm_dict"]
-    loaded_model = SIP_if.model_loader(ckpt, norm)
+    loaded_model = model_loader(ckpt, norm)
     print(f'Checkpoint Model: {model["model_checkpoint"]} Loaded')
     
-    probs,scores = SIP_if.inference_run(data_dict,pad_dict,loaded_model,return_scores=True)
+    probs,scores = inference_run(data_dict,pad_dict,loaded_model,return_scores=True)
     print(f'Inference Run')
     
     model["probs"] = probs
@@ -68,27 +72,30 @@ for model_name,model in model_dict.items():
     del model["pad_dict"]["REGISTERS"]
     
     if save_mode:
-        SIP_if.save_output(probs,pt_vals,eta_vals,truth_flavours,model_name,ckpt,test_file,CONFIG,sample_size)
+        save_output(probs,pt_vals,eta_vals,truth_flavours,model_name,ckpt,test_file,CONFIG,sample_size)
         print(f'Data saved as: {model_name}_inference_output.csv\nMetadata saved as: {model_name}_inference_run_data.txt')
 
+print("")
+print(f'Inference Complete ')
 
 if analysis_mode:
-    for model_name,model in model_dict.items():
-        model["counts_dict"],model["confidences"] = jet_class_confidence_counter(model["probs"],model["truth_flavour"],0.3,0.01)
-    fig = plt.figure(figsize=(10,25), constrained_layout=True)
+    n_plots = len(plot_dict["plots"])
+    fig = plt.figure(figsize=(10,5*n_plots), constrained_layout=True)
     gs = fig.add_gridspec(5,1)
-    
-    profile_hist_plotter(fig,gs[0,0],model_dict,"pt","probability",10)
-    profile_hist_plotter(fig,gs[1,0],model_dict,"eta","probability",10)
-    profile_hist_plotter_truth(fig,gs[2,0],model_dict,"pt","probability",10)
-    profile_hist_plotter_truth(fig,gs[3,0],model_dict,"eta","probability",10)
-    predict_count_plotter(fig,gs[4,0],model_dict)
-    fig.suptitle(f'{model_name} Inference Run Analysis',fontsize=16)
+    for model_name,model in model_dict.items():
+        model["counts_dict"],model["confidences"] = SIP_af.jet_class_confidence_counter(model["probs"],model["truth_flavour"],0.3,0.01)
+    i = 0
+    for plot in plot_dict["plots"].values():
+        if plot["plot_type"] == "profile_histogram":
+            SIP_af.profile_histogram(fig,gs[i,0],model_dict,plot["x_data"],"probability",10)
+        elif plot["plot_type"] == "profile_histogram_truth":
+            SIP_af.profile_histogram_truth(fig,gs[i,0],model_dict,plot["x_data"],"probability",10)
+        elif plot["plot_type"] == "prediction_plot":
+            SIP_af.prediction_plot(fig,gs[i,0],model_dict)
+        i += 1
+    fig.suptitle(plot_dict["report_title"],fontsize=16)
     fig.savefig(f'{model_name}_inference_report.png')
     plt.show()
-
-
-# In[ ]:
 
 
 
