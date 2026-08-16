@@ -120,7 +120,7 @@ def data_histogrammer(x_data,y_data,bins):
 
 ### Profile Histogram
 
-def profile_hist_plotter(fig,gs_cell,model_dict,x_data,y_data,bin_number):
+def profile_histogram(fig,gs_cell,model_dict,x_data,y_data,bin_number):
     """
     creates an approximate profile histogram by plotting the mean and sem of the y data at the midpoint of the binned x data
     Inputs
@@ -196,7 +196,7 @@ def profile_hist_plotter(fig,gs_cell,model_dict,x_data,y_data,bin_number):
 
 ### Truth Sorted Profile Histogram
 
-def profile_hist_plotter_truth(fig,gs_cell,model_dict,x_data,y_data,bin_number):
+def profile_histogram_truth(fig,gs_cell,model_dict,x_data,y_data,bin_number):
     """
     creates an approximate profile histogram by plotting the mean and sem of the y data at the midpoint of the binned x data, sorted by truth value of jets
     Inputs
@@ -293,7 +293,7 @@ def profile_hist_plotter_truth(fig,gs_cell,model_dict,x_data,y_data,bin_number):
 
 ### plotting classed jets by truth flavour by confidence threshold
 
-def predict_count_plotter(fig,gs_cell,model_dict):
+def prediction_plot(fig,gs_cell,model_dict):
     """
     for an input dictionary of flavour counts of various labels, plots a graph for each predicted flavour with a line for the counts at each confidence
     organised by truth label
