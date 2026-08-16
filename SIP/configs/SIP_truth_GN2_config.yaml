@@ -24,7 +24,6 @@ models:
         - decayVertexZ
         - Lxy
 
-
   GN2_model:
     model_checkpoint: ckpts/GN2_model_epoch=010-val_loss=0.59503.ckpt
     plot_colour: "tab:orange"
@@ -54,7 +53,7 @@ models:
         - numberOfSCTSharedHits
 
 inference_report:
-  report_title: TEST
+  report_title: Comparison of GN2 and Truth Classification Models
   plots:
     plot_1:
       plot_type: profile_histogram
