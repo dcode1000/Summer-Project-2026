@@ -13,12 +13,13 @@ import yaml
 from matplotlib.lines import Line2D
 
 ### Data Preparation
-def config_parser(config_file):
+def config_parser(config_file, analysis_mode):
     """
     Config parser that takes in a .yaml config file and extracts appropriate information. For comparing multiple models, a separate list_dict is created for the
     variables of each model
     Inputs:
     - config_file: .yaml file containing SIP config information
+    - analysis_mode: True if want to perform plotting based on the data produced during the inference run
     returns:
     - test_file: file used to run inference on the models
     - sample_size: sample size for analysis
@@ -26,8 +27,8 @@ def config_parser(config_file):
     - low_pt_cutoff: the minimum pt value a jet needs to have
     - high_pt_cutoff: the maximum pt value a jet can have
     - model_dict: dictionary of model dictionaries. Each dictionary contains model name, location of a checkpoint file of the trained model and list of variables used in training the
-    model,  also contains a norm_dict of relevant variables for running
-    inference on
+    model,  also contains a norm_dict of relevant variables for running inference on
+    - plot_dict: dictionary containing configuration information for inference report
     """
     with open(config_file) as f:
         cfg = yaml.load(f, Loader=yaml.FullLoader)
@@ -36,14 +37,17 @@ def config_parser(config_file):
         stored = cfg["stored"]
         low_pt_cutoff = cfg["low_pt_cutoff"]
         high_pt_cutoff = cfg["high_pt_cutoff"]
-        
         model_dict = cfg["models"]
 
+        if analysis_mode:
+            plot_dict = cfg["inference_report"]
+            
     with open(cfg["norm_dict"]) as g:
         norm = yaml.load(g, Loader=yaml.FullLoader)
     
         for model_name, model in model_dict.items():
-            model["norm_dict"] = {}
+            
+            norm_dict_subset = {} # creates a subset of the norm dictionary with only the training parameters
     
             for var_type, variables in model["inference_variables"].items():
     
@@ -53,7 +57,7 @@ def config_parser(config_file):
                         f"is missing from the normalization dictionary."
                     )
     
-                model["norm_dict"][var_type] = {}
+                norm_dict_subset[var_type] = {}
     
                 for variable in variables:
     
@@ -64,11 +68,20 @@ def config_parser(config_file):
                             f"is missing from the normalization dictionary."
                         )
     
-                    model["norm_dict"][var_type][variable] = norm[var_type][variable]
-        
-                    
+                    norm_dict_subset[var_type][variable] = norm[var_type][variable]
 
-    return test_file, sample_size, stored, low_pt_cutoff, high_pt_cutoff, model_dict
+            subset_norm_file = f"{model_name}_norm.yaml"
+
+            with open(subset_norm_file, "w") as f:
+                yaml.safe_dump(norm_dict_subset, f)
+
+            # Store the subset norm config file path rather than the dictionary in the model dictionary
+            model["norm_dict"] = subset_norm_file
+    if analysis_mode:
+        return test_file, sample_size, stored, low_pt_cutoff, high_pt_cutoff, model_dict, plot_dict
+    else:
+        return test_file, sample_size, stored, low_pt_cutoff, high_pt_cutoff, model_dict
+
 
 def h5_test_datafile_prepper(h5_file,list_dict,sample_size,STORED,lower_pt_cutoff,upper_pt_cutoff):
     """
