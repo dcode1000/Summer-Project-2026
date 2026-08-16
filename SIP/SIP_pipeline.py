@@ -73,6 +73,9 @@ for model_name,model in model_dict.items():
     model["probs"] = probs
     model["scores"] = scores
     del model["pad_dict"]["REGISTERS"]
+
+    if model["inference_output"] == "scores":
+        model = SIP_if.scores_unnormaliser(model)
     
     if save_mode:
         SIP_if.save_output(probs,pt_vals,eta_vals,truth_flavours,model_name,ckpt,test_file,CONFIG,sample_size)

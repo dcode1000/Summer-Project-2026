@@ -174,7 +174,9 @@ def model_loader(ckpt, norm_file):
     for task in hparams["model"]["init_args"]["tasks"]["init_args"]["modules"]:
         loss = task["init_args"].get("loss")
     
-        if loss is not None:
+        if (
+        loss is not None
+        and loss.get("class_path") == "torch.nn.CrossEntropyLoss"):
             loss["init_args"]["weight"] = None
     
     # Get the normalization configuration
@@ -207,29 +209,41 @@ def model_loader(ckpt, norm_file):
     return model
 
 ### Running Inference
-def inference_run(data_dict,pad_dict,model,return_scores=False):
+def inference_run(data_dict,pad_dict,loaded_model, model_dict):
     """
     runs inference for a trained model (called model) and returns the probabilities applied by softmax. Can also return scores if scores==True
     inputs:
     - data_dict: dictionary of tensors containing samples and processed datasets with columns corresponding to the training inputs of the model
     - pad_dict: dictionary telling model where padding was applied
+    - loaded_model: model loaded from checkpoint for running inference on
+    - model_dict: dictionary of parameters relating to the model
     returns:
     - probs: array containing 4 probabilities for each jet with the probabilities corresponding to the probability that the jet is each of the 4 flavours
             in order (b, c , light, tau)
     - scores: original 4 scores for each jet returned by model before softmax applied
     """
     with torch.no_grad():  # running inference using the model
+        
+        scores = loaded_model(data_dict,pad_dict) # getting scores
 
-        scores = model(data_dict,pad_dict) # getting scores
+    probs = torch.softmax(scores[0]["jets"][model_dict["inference_task"]], -1).numpy() #softmax converts to probability
+    scores = scores[0]["jets"][model_dict["inference_task"]].numpy()
 
+    return probs, scores
 
-    probs = torch.softmax(scores[0]["jets"]["jets_classification"], -1).numpy() #softmax converts to probability
-    scores = scores[0]["jets"]["jets_prob_regression"].numpy()
+def scores_unnormaliser(model_dict):
+    """
+    for models regressed directly onto GN2 probabilities, will unnormalise the data so that it will be comparable to softmaxed probabilities
+    inputs:
+    - model_dict: dictionary of information related to model of interest
+    returns:
+    - model_dict: updates model dict probs so that they have had their normalisation reversed - for comparison with models that output softmaxed probabilities
+    """
+    for n in range(len(model_dict["scores"][0,:])):
+        model_dict["probs"][:,n] = (model_dict["scores"][:,n])*model_dict["scores_stds"][n] + model_dict["scores_means"][n]
+    print(model_dict["probs"])
 
-    if return_scores == True:
-        return probs, scores
-    else:
-        return probs
+    return model_dict
 
 def save_output(probs,pt_vals,eta_vals,truth_flavours, MODEL_NAME, CKPT, FILE, CONFIG, N):
     """
