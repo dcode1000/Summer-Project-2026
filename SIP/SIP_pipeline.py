@@ -24,23 +24,20 @@ import argparse
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("--checkpoint", required=True,
-                    help="Checkpoint file for model being loaded and analysed.")
-
 parser.add_argument("--config", required=True,
-                    help="Inference pipeline config .txt file.")
+                    help="Inference pipeline config .yaml file.")
 
-parser.add_argument("--analysis_mode", action="store_true")
-parser.add_argument("--comp_mode", action="store_true")
+parser.add_argument("--analysis_mode", action="store_false")
 parser.add_argument("--save_mode", action="store_false")
 
 args = parser.parse_args()
 
 ### pipeline input
-CONFIG = args.config # Text file for configuring h5 test dataset
+CONFIG = args.config # yaml file for configuring h5 test dataset
 
 ### pipeline configs
-analysis_mode = args.analysis_mode # plots graphs and histograms, make false and turn on save_mode to just save the model
+analysis_mode = args.analysis_mode # plots graphs and histograms, make false and turn on save_mode to just save the models 
+#which inference has been run on
 save_mode = args.save_mode # saves output jet flavour probabilities, pt, eta and truth flavours for comparison to another model
 
 ### Running Inference
