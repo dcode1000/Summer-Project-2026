@@ -1,0 +1,34 @@
+train_file: /users/2879346r/sharedscratch/full_ds_model_outputmy_train_vds_file.h5
+val_file: /users/2879346r/sharedscratch/full_ds_model_output/my_val_vds_file.h5
+num_train: 521500000
+num_val: 52150000
+batch_size: 4000
+trainable_params: 2339150
+num_gpus: 3
+gpu_ids:
+- 0
+- 1
+- 2
+num_workers: 20
+available_train: 521500000
+num_unique_jets_train: null
+dsids: null
+jet_counts_train: null
+pp_config_train: null
+object_classes:
+  0: bjets
+  1: cjets
+  2: ujets
+  3: taujets
+available_val: 52150000
+num_unique_jets_val: null
+jet_counts_val: null
+pp_config_val: null
+salt_hash: null
+out_dir: /mnt/scratch/users/2879346r/scaling_laws_test/logs/fd_fm_run_20260808-T053218
+log_url: null
+timestamp: fd_fm_run_20260808-T053218
+torch_version: 2.12.0+cu130
+lightning_version: 2.6.1
+cuda_version: '13.0'
+hostname: node16.cognition.gla.alces.network

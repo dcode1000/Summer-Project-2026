@@ -1,0 +1,583 @@
+train_file: /users/2879346r/sharedscratch/train_split/pp_output_train-split_0.h5
+val_file: /users/2879346r/sharedscratch/val_split/pp_output_val-split_0.h5
+num_train: 30000000
+num_val: 3000000
+batch_size: 4000
+trainable_params: 2339150
+num_gpus: 3
+gpu_ids:
+- 0
+- 1
+- 2
+num_workers: 20
+available_train: 30000000
+num_unique_jets_train: 259591043
+dsids: '[''user.svanstro.601230.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5'',
+  ''user.svanstro.601229.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5'',
+  ''user.svanstro.800030.e7954_s3681_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5'',
+  ''user.svanstro.800030.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5'',
+  ''user.svanstro.410470.e6337_s3681_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5'',
+  ''user.svanstro.800030.e7954_s3797_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-19_kfoldtrain_output.h5'']'
+jet_counts_train:
+  lowpt_ttbar_bjets:
+    num_jets: 45000000
+    unique_jets: 44985286
+  lowpt_ttbar_cjets:
+    num_jets: 45000000
+    unique_jets: 45000000
+  lowpt_ttbar_ujets:
+    num_jets: 90000000
+    unique_jets: 89984510
+  lowpt_ttbar_taujets:
+    num_jets: 6250000
+    unique_jets: 5986771
+  highpt_zprime_bjets:
+    num_jets: 18000000
+    unique_jets: 17896003
+  highpt_zprime_cjets:
+    num_jets: 18000000
+    unique_jets: 18000000
+  highpt_zprime_ujets:
+    num_jets: 36000000
+    unique_jets: 35636690
+  highpt_zprime_taujets:
+    num_jets: 2500000
+    unique_jets: 2101783
+  total:
+    num_jets: 260750000
+    unique_jets: 259591043
+pp_config_train:
+  variables:
+    jets:
+      inputs:
+      - pt_btagJes
+      - eta_btagJes
+      labels:
+      - HadronConeExclTruthLabelID
+      - HadronConeExclTruthLabelPt
+      - HadronConeExclTruthLabelLxy
+      - pt
+      - eta
+      - mass
+      - n_tracks
+      - n_truth_promptLepton
+      - eventNumber
+      - jetFoldHash
+    tracks:
+      inputs:
+      - d0
+      - z0SinTheta
+      - dphi
+      - deta
+      - qOverP
+      - IP3D_signed_d0_significance
+      - IP3D_signed_z0_significance
+      - phiUncertainty
+      - thetaUncertainty
+      - qOverPUncertainty
+      - numberOfPixelHits
+      - numberOfSCTHits
+      - numberOfInnermostPixelLayerHits
+      - numberOfNextToInnermostPixelLayerHits
+      - numberOfInnermostPixelLayerSharedHits
+      - numberOfInnermostPixelLayerSplitHits
+      - numberOfPixelSharedHits
+      - numberOfPixelSplitHits
+      - numberOfSCTSharedHits
+      - leptonID
+      - valid
+      labels:
+      - ftagTruthOriginLabel
+      - ftagTruthTypeLabel
+      - ftagTruthVertexIndex
+  ttbar:
+    name: ttbar
+    equal_jets: false
+    pattern:
+    - user.svanstro.410470.e6337_s3681_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+    - user.svanstro.601229.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+    - user.svanstro.601230.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+  zprime:
+    name: zprime
+    equal_jets: false
+    pattern:
+    - user.svanstro.800030.e7954_s3681_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+    - user.svanstro.800030.e7954_s3797_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-19_kfoldtrain_output.h5/*.h5
+    - user.svanstro.800030.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+  global_cuts:
+    train:
+    - - jetFoldHash
+      - '%4!='
+      - 3
+    - - eventNumber
+      - '%10<='
+      - 8
+    val:
+    - - jetFoldHash
+      - '%4!='
+      - 3
+    - - eventNumber
+      - '%10=='
+      - 9
+    test:
+    - - jetFoldHash
+      - '%4=='
+      - 3
+  lowpt:
+    name: lowpt
+    cuts:
+    - - pt_btagJes
+      - '>'
+      - 20000
+    - - pt_btagJes
+      - <
+      - 250000
+  highpt:
+    name: highpt
+    cuts:
+    - - pt_btagJes
+      - '>'
+      - 250000
+    - - pt_btagJes
+      - <
+      - 6000000
+  components:
+  - region:
+      name: lowpt
+      cuts:
+      - - pt_btagJes
+        - '>'
+        - 20000
+      - - pt_btagJes
+        - <
+        - 250000
+    sample:
+      name: ttbar
+      equal_jets: false
+      pattern:
+      - user.svanstro.410470.e6337_s3681_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+      - user.svanstro.601229.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+      - user.svanstro.601230.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+    flavours:
+    - bjets
+    - cjets
+    num_jets: 45000000
+    equal_jets: false
+  - region:
+      name: lowpt
+      cuts:
+      - - pt_btagJes
+        - '>'
+        - 20000
+      - - pt_btagJes
+        - <
+        - 250000
+    sample:
+      name: ttbar
+      equal_jets: false
+      pattern:
+      - user.svanstro.410470.e6337_s3681_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+      - user.svanstro.601229.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+      - user.svanstro.601230.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+    flavours:
+    - ujets
+    num_jets: 90000000
+    equal_jets: false
+  - region:
+      name: lowpt
+      cuts:
+      - - pt_btagJes
+        - '>'
+        - 20000
+      - - pt_btagJes
+        - <
+        - 250000
+    sample:
+      name: ttbar
+      equal_jets: false
+      pattern:
+      - user.svanstro.410470.e6337_s3681_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+      - user.svanstro.601229.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+      - user.svanstro.601230.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+    flavours:
+    - taujets
+    num_jets: 6250000
+    equal_jets: false
+  - region:
+      name: highpt
+      cuts:
+      - - pt_btagJes
+        - '>'
+        - 250000
+      - - pt_btagJes
+        - <
+        - 6000000
+    sample:
+      name: zprime
+      equal_jets: false
+      pattern:
+      - user.svanstro.800030.e7954_s3681_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+      - user.svanstro.800030.e7954_s3797_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-19_kfoldtrain_output.h5/*.h5
+      - user.svanstro.800030.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+    flavours:
+    - bjets
+    - cjets
+    num_jets: 18000000
+    equal_jets: false
+  - region:
+      name: highpt
+      cuts:
+      - - pt_btagJes
+        - '>'
+        - 250000
+      - - pt_btagJes
+        - <
+        - 6000000
+    sample:
+      name: zprime
+      equal_jets: false
+      pattern:
+      - user.svanstro.800030.e7954_s3681_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+      - user.svanstro.800030.e7954_s3797_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-19_kfoldtrain_output.h5/*.h5
+      - user.svanstro.800030.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+    flavours:
+    - ujets
+    num_jets: 36000000
+    equal_jets: false
+  - region:
+      name: highpt
+      cuts:
+      - - pt_btagJes
+        - '>'
+        - 250000
+      - - pt_btagJes
+        - <
+        - 6000000
+    sample:
+      name: zprime
+      equal_jets: false
+      pattern:
+      - user.svanstro.800030.e7954_s3681_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+      - user.svanstro.800030.e7954_s3797_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-19_kfoldtrain_output.h5/*.h5
+      - user.svanstro.800030.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+    flavours:
+    - taujets
+    num_jets: 2500000
+    equal_jets: false
+  resampling:
+    target: cjets
+    method: countup
+    sampling_fraction: auto
+    variables:
+      pt_btagJes:
+        bins:
+        - - 20000
+          - 250000
+          - 50
+        - - 250000
+          - 1000000
+          - 50
+        - - 1000000
+          - 6000000
+          - 50
+      absEta_btagJes:
+        bins:
+        - - 0
+          - 2.5
+          - 20
+  global:
+    jets_name: jets
+    batch_size: 1000000
+    num_jets_estimate: 25000000
+    base_dir: /home/xzcappon/phd/datasets/combined_run2_run3/p5922/high_stats/fold1
+    ntuple_dir: /home/xucapsva/data/ftag/h5/gn2_v01/ntuples
+  pp_git_hash: c2755c5
+object_classes:
+  0: bjets
+  1: cjets
+  2: ujets
+  3: taujets
+available_val: 3000000
+num_unique_jets_val: 25420542
+jet_counts_val:
+  lowpt_ttbar_bjets:
+    num_jets: 4500000
+    unique_jets: 4467920
+  lowpt_ttbar_cjets:
+    num_jets: 4500000
+    unique_jets: 4500000
+  lowpt_ttbar_ujets:
+    num_jets: 9000000
+    unique_jets: 8920191
+  lowpt_ttbar_taujets:
+    num_jets: 625000
+    unique_jets: 525400
+  highpt_zprime_bjets:
+    num_jets: 1800000
+    unique_jets: 1666421
+  highpt_zprime_cjets:
+    num_jets: 1800000
+    unique_jets: 1800000
+  highpt_zprime_ujets:
+    num_jets: 3600000
+    unique_jets: 3403317
+  highpt_zprime_taujets:
+    num_jets: 250000
+    unique_jets: 137293
+  total:
+    num_jets: 26075000
+    unique_jets: 25420542
+pp_config_val:
+  variables:
+    jets:
+      inputs:
+      - pt_btagJes
+      - eta_btagJes
+      labels:
+      - HadronConeExclTruthLabelID
+      - HadronConeExclTruthLabelPt
+      - HadronConeExclTruthLabelLxy
+      - pt
+      - eta
+      - mass
+      - n_tracks
+      - n_truth_promptLepton
+      - eventNumber
+      - jetFoldHash
+    tracks:
+      inputs:
+      - d0
+      - z0SinTheta
+      - dphi
+      - deta
+      - qOverP
+      - IP3D_signed_d0_significance
+      - IP3D_signed_z0_significance
+      - phiUncertainty
+      - thetaUncertainty
+      - qOverPUncertainty
+      - numberOfPixelHits
+      - numberOfSCTHits
+      - numberOfInnermostPixelLayerHits
+      - numberOfNextToInnermostPixelLayerHits
+      - numberOfInnermostPixelLayerSharedHits
+      - numberOfInnermostPixelLayerSplitHits
+      - numberOfPixelSharedHits
+      - numberOfPixelSplitHits
+      - numberOfSCTSharedHits
+      - leptonID
+      - valid
+      labels:
+      - ftagTruthOriginLabel
+      - ftagTruthTypeLabel
+      - ftagTruthVertexIndex
+  ttbar:
+    name: ttbar
+    equal_jets: false
+    pattern:
+    - user.svanstro.410470.e6337_s3681_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+    - user.svanstro.601229.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+    - user.svanstro.601230.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+  zprime:
+    name: zprime
+    equal_jets: false
+    pattern:
+    - user.svanstro.800030.e7954_s3681_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+    - user.svanstro.800030.e7954_s3797_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-19_kfoldtrain_output.h5/*.h5
+    - user.svanstro.800030.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+  global_cuts:
+    train:
+    - - jetFoldHash
+      - '%4!='
+      - 3
+    - - eventNumber
+      - '%10<='
+      - 8
+    val:
+    - - jetFoldHash
+      - '%4!='
+      - 3
+    - - eventNumber
+      - '%10=='
+      - 9
+    test:
+    - - jetFoldHash
+      - '%4=='
+      - 3
+  lowpt:
+    name: lowpt
+    cuts:
+    - - pt_btagJes
+      - '>'
+      - 20000
+    - - pt_btagJes
+      - <
+      - 250000
+  highpt:
+    name: highpt
+    cuts:
+    - - pt_btagJes
+      - '>'
+      - 250000
+    - - pt_btagJes
+      - <
+      - 6000000
+  components:
+  - region:
+      name: lowpt
+      cuts:
+      - - pt_btagJes
+        - '>'
+        - 20000
+      - - pt_btagJes
+        - <
+        - 250000
+    sample:
+      name: ttbar
+      equal_jets: false
+      pattern:
+      - user.svanstro.410470.e6337_s3681_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+      - user.svanstro.601229.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+      - user.svanstro.601230.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+    flavours:
+    - bjets
+    - cjets
+    num_jets: 45000000
+    equal_jets: false
+  - region:
+      name: lowpt
+      cuts:
+      - - pt_btagJes
+        - '>'
+        - 20000
+      - - pt_btagJes
+        - <
+        - 250000
+    sample:
+      name: ttbar
+      equal_jets: false
+      pattern:
+      - user.svanstro.410470.e6337_s3681_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+      - user.svanstro.601229.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+      - user.svanstro.601230.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+    flavours:
+    - ujets
+    num_jets: 90000000
+    equal_jets: false
+  - region:
+      name: lowpt
+      cuts:
+      - - pt_btagJes
+        - '>'
+        - 20000
+      - - pt_btagJes
+        - <
+        - 250000
+    sample:
+      name: ttbar
+      equal_jets: false
+      pattern:
+      - user.svanstro.410470.e6337_s3681_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+      - user.svanstro.601229.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+      - user.svanstro.601230.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+    flavours:
+    - taujets
+    num_jets: 6250000
+    equal_jets: false
+  - region:
+      name: highpt
+      cuts:
+      - - pt_btagJes
+        - '>'
+        - 250000
+      - - pt_btagJes
+        - <
+        - 6000000
+    sample:
+      name: zprime
+      equal_jets: false
+      pattern:
+      - user.svanstro.800030.e7954_s3681_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+      - user.svanstro.800030.e7954_s3797_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-19_kfoldtrain_output.h5/*.h5
+      - user.svanstro.800030.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+    flavours:
+    - bjets
+    - cjets
+    num_jets: 18000000
+    equal_jets: false
+  - region:
+      name: highpt
+      cuts:
+      - - pt_btagJes
+        - '>'
+        - 250000
+      - - pt_btagJes
+        - <
+        - 6000000
+    sample:
+      name: zprime
+      equal_jets: false
+      pattern:
+      - user.svanstro.800030.e7954_s3681_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+      - user.svanstro.800030.e7954_s3797_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-19_kfoldtrain_output.h5/*.h5
+      - user.svanstro.800030.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+    flavours:
+    - ujets
+    num_jets: 36000000
+    equal_jets: false
+  - region:
+      name: highpt
+      cuts:
+      - - pt_btagJes
+        - '>'
+        - 250000
+      - - pt_btagJes
+        - <
+        - 6000000
+    sample:
+      name: zprime
+      equal_jets: false
+      pattern:
+      - user.svanstro.800030.e7954_s3681_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+      - user.svanstro.800030.e7954_s3797_r13144_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-19_kfoldtrain_output.h5/*.h5
+      - user.svanstro.800030.e8514_s4162_r14622_p5922.tdd.EMPFlow_kfold.24_2_27.23-11-10_kfoldtrain_output.h5/*.h5
+    flavours:
+    - taujets
+    num_jets: 2500000
+    equal_jets: false
+  resampling:
+    target: cjets
+    method: countup
+    sampling_fraction: auto
+    variables:
+      pt_btagJes:
+        bins:
+        - - 20000
+          - 250000
+          - 50
+        - - 250000
+          - 1000000
+          - 50
+        - - 1000000
+          - 6000000
+          - 50
+      absEta_btagJes:
+        bins:
+        - - 0
+          - 2.5
+          - 20
+  global:
+    jets_name: jets
+    batch_size: 1000000
+    num_jets_estimate: 25000000
+    base_dir: /home/xzcappon/phd/datasets/combined_run2_run3/p5922/high_stats/fold1
+    ntuple_dir: /home/xucapsva/data/ftag/h5/gn2_v01/ntuples
+  pp_git_hash: 70d64b1
+salt_hash: null
+out_dir: /mnt/scratch/users/2879346r/scaling_laws_test_two/logs/dd_sd_fm_run_20260812-T210600
+log_url: null
+timestamp: dd_sd_fm_run_20260812-T210600
+torch_version: 2.12.0+cu130
+lightning_version: 2.6.1
+cuda_version: '13.0'
+hostname: node11.cognition.gla.alces.network
