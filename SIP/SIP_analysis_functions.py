@@ -147,13 +147,9 @@ def profile_histogram(fig,gs_cell,model_dict,x_data,y_data,bin_number):
             "values": lambda model: model["eta_vals"],
         },
         "probability": {
-            "label": "Tag Probability",
+            "label": "Average Model \n Flavour Tag Probability",
             "values": lambda model: model["probs"],
         },
-        "scores": {
-            "label": "Tag Probability",
-            "values": lambda model: model["scores"],
-        }
     }
     
 
@@ -167,7 +163,7 @@ def profile_histogram(fig,gs_cell,model_dict,x_data,y_data,bin_number):
     source_handles = [Line2D([0], [0],color=model_dict[model_name]["plot_colour"],lw=2,marker="^",markersize=5,label=f"{model_name}",)
                       for model_name in model_dict]
 
-    title_ax.set_title(rf'Model Tagging Probability For Each Flavour Against {x_name}')
+    title_ax.set_title(rf'Model Flavour Tagging Probability Against {x_name}')
     
     for n in range(4):
         ax = fig.add_subplot(inner[1+n // 2, n % 2])
@@ -189,7 +185,7 @@ def profile_histogram(fig,gs_cell,model_dict,x_data,y_data,bin_number):
                     fontsize=8,)
 
         ax.set_ylim(0,1)
-        ax.set_title(rf'{flav_classes[n]}-jet')
+        ax.set_title(rf'Truth Flavour: {flav_classes[n]}-jet')
         ax.set_xlabel(rf"{x_name} {x_units}")
         ax.set_ylabel(rf"{y_name}")
         ax.grid()
@@ -226,13 +222,9 @@ def profile_histogram_truth(fig,gs_cell,model_dict,x_data,y_data,bin_number):
             "values": lambda model: model["eta_vals"],
         },
         "probability": {
-            "label": "Tag Probability",
+            "label": "Average Model \n Flavour Tag Probability",
             "values": lambda model: model["probs"],
         },
-        "scores": {
-            "label": "Tag Probability",
-            "values": lambda model: model["scores"],
-        }
     }
     x_config = plot_config[x_data]
     x_name = x_config["label"]
@@ -243,7 +235,7 @@ def profile_histogram_truth(fig,gs_cell,model_dict,x_data,y_data,bin_number):
 
     title_ax = fig.add_subplot(inner[0, :])
     title_ax.axis("off")
-    title_ax.set_title(rf'Tagging Probability By Truth Flavour Against {x_name}')
+    title_ax.set_title(f"Model Flavour Tag Probability\nBy Truth Flavour Against {x_name}")
     
     for n in range(4):
         ax = fig.add_subplot(inner[1+n // 2, n % 2])
@@ -265,7 +257,7 @@ def profile_histogram_truth(fig,gs_cell,model_dict,x_data,y_data,bin_number):
             ax.set_xlabel(rf'{x_name} {x_units}')
             ax.set_ylabel(rf'{y_name}')
             ax.set_ylim(0,1)
-            ax.set_title(rf'Model Predicted {flav_classes[n]}-jet')
+            ax.set_title(rf'Model {flav_classes[n]}-jet Probabilities')
 
             i +=1
         if n == 0:
@@ -309,7 +301,7 @@ def prediction_plot(fig,gs_cell,model_dict):
 
     title_ax = fig.add_subplot(inner[0, :])
     title_ax.axis("off")
-    title_ax.set_title("Model Predicted Jet Classification By Jet Truth Flavour\n""Against Classification Threshold")
+    title_ax.set_title("Model Jet Classification By Jet Truth Flavour\n""Against Classification Threshold")
     
     jet_flavours = ["b", "c", "light", "tau"]
     for n in range(4):
