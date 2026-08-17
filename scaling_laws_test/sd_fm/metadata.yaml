@@ -574,9 +574,9 @@ pp_config_val:
     ntuple_dir: /home/xucapsva/data/ftag/h5/gn2_v01/ntuples
   pp_git_hash: 70d64b1
 salt_hash: null
-out_dir: /mnt/scratch/users/2879346r/scaling_laws_test_two/logs/sd_fm_run_20260812-T141130
+out_dir: /mnt/scratch/users/2879346r/scaling_laws_test/logs/sd_fm_run_20260808-T074840
 log_url: null
-timestamp: sd_fm_run_20260812-T141130
+timestamp: sd_fm_run_20260808-T074840
 torch_version: 2.12.0+cu130
 lightning_version: 2.6.1
 cuda_version: '13.0'
