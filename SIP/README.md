@@ -31,7 +31,13 @@ Configuration of the SIP pipeline is done via a .yaml file. All required formats
 
 ### Adding Models
 
-Models can be added to the pipeline by using the structure found in 
+Models can be added to the pipeline by using the structure found in the SIP_config.yaml file. Simply indent from the models section of the config and add the name of the model you wish to analyse. YAML files are automatically read as dictionaries. To be able to perform analysis the dictionary for the model needs the following information (indented again from the model name):
+- model_checkpoint: path to saved checkpoint file containing a .ckpt file containing the trained model under analysis
+- inference_task: the name of the task you want to run inference on in the salt model config
+- inference_output: either probs or scores, for classification models you want the softmaxed scores - ie the probabilities but for some regression models you may wish to use the scores
+- inference_variables: the training variables required for the model, organised by type (ie jets, truth_hadrons etc)
+- plot_colour: the colour of the output of this model during graphical analysis
+To add plots you can simply add them under the inference_report section. The supertitle of the report can be added in the report_title entry. Each plot can be added separately, you only need to specify the type of plot and the x data you wish to use (if a profile histogram, otherwise do not specify).
 
 ## Running the Pipeline
 
