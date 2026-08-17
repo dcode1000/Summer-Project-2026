@@ -11,6 +11,8 @@ This is a simple project to provide some tools for running inference on a checkp
 - Produce a CSV file containing the output probabilities and other comparison parameters (pt, eta etc)
 - Create a variety of graphs comparing different loaded models and break down their output by pt, eta and look at the actual jet flavour the model predicts each jet should be
 
+The jupyter_notebooks folder contains notebooks containing the same code as the scripts as well as a notebook explaining how to load .ckpt files using the salt framework. This uses salt-ml 0.9.0 but is still useful for getting an understanding of the process.
+
 ## Project Structure
 
 - `SIP_pipeline.py` - Main pipeline script, runs the pipeline, with various options
