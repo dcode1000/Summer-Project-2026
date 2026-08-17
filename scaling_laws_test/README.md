@@ -1,6 +1,6 @@
 ## scaling_laws README
 
-This folder contains all the salt configs, a representative checkpoint file for each trained model (usually that with the lowest validation loss) and metadata and performance metrics used to train the various models needed when testing for the presence of scaling laws in the trained models. The models used are:
+This folder contains all the salt configs, a representative checkpoint file for each trained model (usually that with the lowest validation loss) and metadata and performance metrics used to train the various models needed when testing for the presence of scaling laws in the trained models. Analysis script and output is in the analysis folder. The models used are:
 
 - fd_fm: full dataset, full model - trains on the entire dataset and uses the full model
 - sd_fm: small dataset, full model - trains on a slice of the dataset and uses full model
