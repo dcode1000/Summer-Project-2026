@@ -50,4 +50,4 @@ To target specific GPUs can use the `--trainer.devices` flag and enclose specifi
 
 ## Analysis
 
-Analysing trained models can be done using the salt test command (see docs). For more in depth analysis the 'Salt Inference Pipeline' (SIP) which is in a linked repository, can be used. (SOME FEATURES STILL WORK IN PROGRESS). This contains some python scripts for producing graphs and comparing models.
+Analysing trained models can be done using the salt test command (see docs). For more in depth analysis the 'Salt Inference Pipeline' (SIP) can be used. This contains some python scripts for producing graphs and comparing models. For full details see the README in the SIP folder.
