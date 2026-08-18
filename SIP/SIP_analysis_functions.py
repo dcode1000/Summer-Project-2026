@@ -160,7 +160,7 @@ def profile_histogram(fig,gs_cell,model_dict,x_data,y_data,bin_number):
     y_config = plot_config[y_data]
     y_name = y_config["label"]
 
-    source_handles = [Line2D([0], [0],color=model_dict[model_name]["plot_colour"],lw=2,marker="^",markersize=5,label=f"{model_name}",)
+    source_handles = [Line2D([0], [0],color=model_dict[model_name]["plot_colour"],lw=2,marker="^",markersize=5,label=model_dict[model_name]["model_name"],)
                       for model_name in model_dict]
 
     title_ax.set_title(rf'Model Flavour Tagging Probability Against {x_name}')
@@ -275,7 +275,7 @@ def profile_histogram_truth(fig,gs_cell,model_dict,x_data,y_data,bin_number):
             )
         
             # Legend for model (colour)
-            source_handles = [Line2D([0], [0],color=model_dict[model_name]["plot_colour"],marker="o",linestyle="None",markersize=5,label=model_name,)
+            source_handles = [Line2D([0], [0],color=model_dict[model_name]["plot_colour"],marker="o",linestyle="None",markersize=5,label=model_dict[model_name]["model_name"],)
                 for model_name in model_dict]
         
             source_legend = ax.legend(handles=source_handles,title="Model",loc="center left",bbox_to_anchor=(1.02, 0.0),fontsize=8,)
@@ -327,7 +327,7 @@ def prediction_plot(fig,gs_cell,model_dict):
             )
         
             # Legend for model (colour)
-            source_handles = [Line2D([0], [0],color=model_dict[model_name]["plot_colour"],marker="o",linestyle="None",markersize=5,label=model_name,)
+            source_handles = [Line2D([0], [0],color=model_dict[model_name]["plot_colour"],marker="o",linestyle="None",markersize=5,label=model_dict[model_name]["model_name"],)
                 for model_name in model_dict]
         
             source_legend = ax.legend(handles=source_handles,title="Model",loc="center left",bbox_to_anchor=(1.02, 0.0),fontsize=8,)

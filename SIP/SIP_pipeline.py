@@ -84,7 +84,7 @@ print(f'Inference Complete ')
 if analysis_mode:
     n_plots = len(plot_dict["plots"])
     fig = plt.figure(figsize=(10,5*n_plots), constrained_layout=True)
-    gs = fig.add_gridspec(5,1)
+    gs = fig.add_gridspec(n_plots,1)
     for model_name,model in model_dict.items():
         model["counts_dict"],model["confidences"] = SIP_af.jet_class_confidence_counter(model["probs"],model["truth_flavour"],0.3,0.01)
     i = 0
