@@ -270,7 +270,7 @@ def profile_histogram_truth(fig,gs_cell,model_dict,x_data,y_data,bin_number):
                 handles=truth_handles,
                 title="Jet Truth Flavour",
                 loc="center left",
-                bbox_to_anchor=(1.02, 0.5),
+                bbox_to_anchor=(1.02, 0.7),
                 fontsize=8,
             )
         
@@ -322,7 +322,7 @@ def prediction_plot(fig,gs_cell,model_dict):
                 handles=truth_handles,
                 title="Jet Truth Flavour",
                 loc="center left",
-                bbox_to_anchor=(1.02, 0.5),
+                bbox_to_anchor=(1.02, 0.7),
                 fontsize=8,
             )
         
