@@ -82,6 +82,7 @@ models:
 
 inference_report:
   report_title: Comparison of GN2 and Truth Surrogate Models
+  save_title: GN2_truth_comparison
   plots:
     plot_1:
       plot_type: profile_histogram

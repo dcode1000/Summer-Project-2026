@@ -97,7 +97,7 @@ if analysis_mode:
             SIP_af.prediction_plot(fig,gs[i,0],model_dict)
         i += 1
     fig.suptitle(plot_dict["report_title"],fontsize=16)
-    fig.savefig(f'{model_name}_inference_report.pdf',format="pdf")
+    fig.savefig(f'{plot_dict["save_title"]}_plot.pdf',format="pdf")
     plt.show()
 
 
