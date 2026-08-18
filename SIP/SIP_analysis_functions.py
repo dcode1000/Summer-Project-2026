@@ -235,7 +235,7 @@ def profile_histogram_truth(fig,gs_cell,model_dict,x_data,y_data,bin_number):
 
     title_ax = fig.add_subplot(inner[0, :])
     title_ax.axis("off")
-    title_ax.set_title(f"Model Flavour Tag Probability\nBy Truth Flavour Against {x_name}")
+    title_ax.set_title(f"Model Flavour Tag Probability by Truth Flavour Against {x_name}")
     
     for n in range(4):
         ax = fig.add_subplot(inner[1+n // 2, n % 2])
