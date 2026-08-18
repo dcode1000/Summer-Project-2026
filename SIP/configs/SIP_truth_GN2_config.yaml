@@ -8,6 +8,7 @@ high_pt_cutoff: 250000
 
 models:
   truth_classification_model:
+    model_name: "Truth Hadron \n Classifier Model"
     model_checkpoint: ckpts/epoch=013-val_loss=0.62472.ckpt  
     inference_task: jets_classification
     inference_output: probs
@@ -27,6 +28,7 @@ models:
     plot_colour: "tab:blue"
 
   truth_regression_model:
+    model_name: "Truth Hadron \n Regression Model"
     model_checkpoint: ckpts/truth_regression_epoch=018-val_loss=0.51368.ckpt  
     inference_task: jets_prob_regression
     inference_output: scores
@@ -48,6 +50,7 @@ models:
     plot_colour: "tab:green"
     
   GN2_model:
+    model_name: "Standard GN2 Model"
     model_checkpoint: ckpts/GN2_model_epoch=010-val_loss=0.59503.ckpt
     inference_task: jets_classification
     inference_output: probs
