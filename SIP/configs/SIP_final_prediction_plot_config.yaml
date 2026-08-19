@@ -1,7 +1,7 @@
 
 test_file: truth_regression_model/pp_output_test_ttbar.h5 # hdf5 containing data to test models on 
 norm_dict: norm_dict.yaml # norm dictionary of variables created by 
-sample_size: 20000 # number of data points to running inference on
+sample_size: 50000 # number of data points to running inference on
 stored: GN2v01 # model output stored in test file, should be GN2v01
 low_pt_cutoff: 20000 # pt cutoffs
 high_pt_cutoff: 250000
