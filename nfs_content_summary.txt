@@ -1,0 +1,16 @@
+nfs content summary
+
+In nfs/users/drobbie:
+
+caches: directory for caches for uv etc
+dumped_truth: contains most of the pipeline for processing data and training models using new truth models
+- /full_dumped_data: set of all dumped ttbar h5 files with correct truth data for preprocessing
+final_GN2_model: config and logs for training GN2 model in salt 0.13.0
+Ftag_1_tt: contains all ttbar DAOD files and note of files contained
+Ftag_1_Zprime: contains DAOD files for Zprime collisions which are to be dumped
+GN2_full_pt_model: contains config and logs for training GN2 standard model with full pt range of data (ttbar and zprime)
+open_data: contains all available open dataset files (100GB total)
+salt-env: uv venv for using salt-ml 0.9.0
+TDD: contains training dataset dumper code and configs
+
+All other directories are tests or superseded by directories listed above 
